@@ -1,4 +1,4 @@
-package dao;
+package fr.agriote.dao;
 
 import fr.agriote.dao.Database;
 import java.sql.Connection;

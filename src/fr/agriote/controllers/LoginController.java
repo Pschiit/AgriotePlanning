@@ -1,7 +1,8 @@
 package fr.agriote.controllers;
 
 import fr.agriote.dao.Database;
-import fr.agriote.dao.MemberDao;
+import fr.agriote.dao.PersonneDao;
+import fr.agriote.models.Personne;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,20 +21,25 @@ public class LoginController {
     @FXML
     private Text actiontarget;
     @FXML
-    private TextField loginField;
+    private TextField emailField;
     @FXML
     private PasswordField passwordField;
 
     @FXML
-    protected void handleSignInButtonAction(ActionEvent event) {
+    protected void handleSignInAction(ActionEvent event) {
         try {
-            if (MemberDao.getByLoginPassword(loginField.getText(), passwordField.getText()) != null) {
-                Stage stage = (Stage) actiontarget.getScene().getWindow();
-                Parent root = FXMLLoader.load(getClass().getResource("/fr/agriote/views/Planning.fxml"));
-                stage.setScene(new Scene(root, 1280, 720));
-                stage.show();
+            Personne utilisateur = PersonneDao.getByEmailPassword(emailField.getText(), passwordField.getText());
+            if (utilisateur != null) {
+                if (utilisateur.isAdmin()) {
+                    Stage stage = (Stage) actiontarget.getScene().getWindow();
+                    Parent root = FXMLLoader.load(getClass().getResource("/fr/agriote/views/Planning.fxml"));
+                    stage.setScene(new Scene(root, 1280, 720));
+                    stage.show();
+                } else {
+                    actiontarget.setText("Vous n'etez pas autorisé(e) à modifier le planning.");
+                }
             } else {
-                actiontarget.setText("Error with your credential");
+                actiontarget.setText("Email ou mot de passe incorrect.");
             }
         } catch (Exception e) {
             actiontarget.setText(e.getMessage());

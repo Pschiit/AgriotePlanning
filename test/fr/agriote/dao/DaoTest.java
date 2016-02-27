@@ -1,4 +1,4 @@
-package dao;
+package fr.agriote.dao;
 
 import fr.agriote.dao.Database;
 import java.sql.CallableStatement;
@@ -13,7 +13,7 @@ public class DaoTest {
     public  void resetDb() throws SQLException{
         System.out.println("Reseting database.");
         Connection connection = Database.getConnection();
-        CallableStatement order  = connection.prepareCall("{CALL reset_db()}");
+        CallableStatement order  = connection.prepareCall("{CALL reset_massy2016()}");
         order.execute();
         order.close();
         connection.close();
