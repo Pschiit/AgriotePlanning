@@ -19,7 +19,9 @@
        <PasswordField fx:id="passwordField"  onAction="#handleSignInAction" prefHeight="50.0" prefWidth="300.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
        <HBox alignment="bottom_right" spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="4">
           <children>
-              <Button onAction="#handleSignInAction" text="Sign In" />
+              <CheckBox fx:id="saveEmail" text="Conserver votre email">
+              </CheckBox>
+              <Button onAction="#handleSignInAction" text="Se Connecter" />
           </children>
        </HBox>
        <Text fx:id="actiontarget" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
