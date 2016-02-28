@@ -1,6 +1,6 @@
-package fr.agriote.dao;
+package fr.agriotes.planning.dao;
 
-import fr.agriote.models.Personne;
+import fr.agriotes.planning.models.Personne;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

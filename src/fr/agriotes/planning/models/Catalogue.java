@@ -1,17 +1,16 @@
-package fr.agriote.models;
+package fr.agriotes.planning.models;
 
-import fr.agriote.dao.PlanningDao;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.Objects;
 
-public class Planning {
+public class Catalogue {
 
     private HashMap<Integer, Session> lesSessions = new HashMap<>();
-    private HashMap<Integer, Seance> lesSeances = new HashMap<>();
     private HashMap<Integer, Module> lesModules = new HashMap<>();
     private HashMap<Integer, Personne> lesFormateurs = new HashMap<>();
 
-    public Planning() {
+    public Catalogue() {
     }
 
     public HashMap<Integer, Session> getLesSessions() {
@@ -20,14 +19,6 @@ public class Planning {
 
     public void setLesSessions(HashMap<Integer, Session> lesSessions) {
         this.lesSessions = lesSessions;
-    }
-
-    public HashMap<Integer, Seance> getLesSeances() {
-        return lesSeances;
-    }
-
-    public void setLesSeances(HashMap<Integer, Seance> lesSeances) {
-        this.lesSeances = lesSeances;
     }
 
     public HashMap<Integer, Module> getLesModules() {
@@ -46,6 +37,39 @@ public class Planning {
         this.lesFormateurs = lesFormateurs;
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 97 * hash + Objects.hashCode(this.lesSessions);
+        hash = 97 * hash + Objects.hashCode(this.lesModules);
+        hash = 97 * hash + Objects.hashCode(this.lesFormateurs);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Catalogue other = (Catalogue) obj;
+        if (!Objects.equals(this.lesSessions, other.lesSessions)) {
+            return false;
+        }
+        if (!Objects.equals(this.lesModules, other.lesModules)) {
+            return false;
+        }
+        if (!Objects.equals(this.lesFormateurs, other.lesFormateurs)) {
+            return false;
+        }
+        return true;
+    }
+
     public void afficheCatalogue() {
         System.out.println("Liste des sessions :");
         for (Entry<Integer, Session> entry : lesSessions.entrySet()) {
@@ -57,7 +81,7 @@ public class Planning {
                 System.out.print("\t" + leModule.getId() + " : " + leModule);
                 System.out.print(" Formateur(s) : ");
                 for (Personne leFormateur : leModule.getFormateurs()) {
-                    System.out.print(leFormateur.getId() + " : " + leFormateur);
+                    System.out.print(leFormateur.getId() + "-" + leFormateur + " ");
                 }
                 System.out.println();
             }

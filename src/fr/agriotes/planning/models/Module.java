@@ -1,14 +1,15 @@
-package fr.agriote.models;
+package fr.agriotes.planning.models;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
 public class Module {
+
     private int id;
     private String intitule;
     private int nombreJours;
-    private ArrayList<Personne> formateurs;
-    
+    private ArrayList<Personne> formateurs = new ArrayList<>();
+
     public Module() {
     }
 
@@ -16,7 +17,7 @@ public class Module {
         this.id = id;
         this.intitule = intitule;
         this.nombreJours = nombreJours;
-        this.formateurs = formateurs;
+        setFormateurs(formateurs);
     }
 
     public int getId() {
@@ -48,7 +49,9 @@ public class Module {
     }
 
     public void setFormateurs(ArrayList<Personne> formateurs) {
-        this.formateurs = formateurs;
+        if (formateurs != null) {
+            this.formateurs = formateurs;
+        }
     }
 
     @Override

@@ -1,4 +1,4 @@
-package fr.agriote.models;
+package fr.agriotes.planning.models;
 
 public class Date extends java.sql.Date {
     private int annee;

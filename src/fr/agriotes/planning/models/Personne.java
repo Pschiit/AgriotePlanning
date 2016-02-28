@@ -1,4 +1,4 @@
-package fr.agriote.models;
+package fr.agriotes.planning.models;
 
 import java.util.Objects;
 

@@ -1,6 +1,6 @@
-package fr.agriote.dao;
+package fr.agriotes.planning.dao;
 
-import fr.agriote.dao.Database;
+import fr.agriotes.planning.dao.Database;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;

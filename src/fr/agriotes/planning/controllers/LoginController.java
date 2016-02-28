@@ -1,11 +1,7 @@
-package fr.agriote.controllers;
+package fr.agriotes.planning.controllers;
 
-import fr.agriote.dao.Database;
-import fr.agriote.dao.PersonneDao;
-import fr.agriote.models.Personne;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import fr.agriotes.planning.dao.PersonneDao;
+import fr.agriotes.planning.models.Personne;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -32,8 +28,8 @@ public class LoginController {
             if (utilisateur != null) {
                 if (utilisateur.isAdmin()) {
                     Stage stage = (Stage) actiontarget.getScene().getWindow();
-                    Parent root = FXMLLoader.load(getClass().getResource("/fr/agriote/views/Planning.fxml"));
-                    stage.setScene(new Scene(root, 1280, 720));
+                    Parent root = FXMLLoader.load(getClass().getResource("/fr/agriotes/planning/views/Planning.fxml"));
+                    stage.setScene(new Scene(root, stage.getWidth(), stage.getHeight()));
                     stage.show();
                 } else {
                     actiontarget.setText("Vous n'etez pas autorisé(e) à modifier le planning.");

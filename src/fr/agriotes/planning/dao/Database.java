@@ -1,4 +1,4 @@
-package fr.agriote.dao;
+package fr.agriotes.planning.dao;
 
 import java.sql.*;
 
@@ -28,9 +28,9 @@ public class Database {
 
     protected static final String DRIVER_NAME = "com.mysql.jdbc.Driver";
     protected static final String DB_NAME = "siomassy2016";
-    /*protected static final String URL = "jdbc:mysql://eu-cdbr-azure-north-d.cloudapp.net/" + DB_NAME;
-    protected static final String USER = "b3cb3a8b3ab0f3";
-    protected static final String PASSWORD = "ae43d4d9";*/
+    protected static final String URL_AZURE = "jdbc:mysql://eu-cdbr-azure-north-d.cloudapp.net/" + DB_NAME;
+    protected static final String USER_AZURE = "b3cb3a8b3ab0f3";
+    protected static final String PASSWORD_AZURE = "ae43d4d9";
     protected static final String URL = "jdbc:mysql://localhost/" + DB_NAME;
     protected static final String USER = "user_massy2016";
     protected static final String PASSWORD = "pwd_massy2016";
@@ -65,7 +65,12 @@ public class Database {
      * @throws java.sql.SQLException
      */
     public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USER, PASSWORD);
+        try{
+            return DriverManager.getConnection(URL, USER, PASSWORD);
+        }catch(SQLException ex){
+            System.out.println("No SQL SERVER on localhost");
+            return DriverManager.getConnection(URL_AZURE,USER_AZURE, PASSWORD_AZURE);
+        }
     }
 
 }

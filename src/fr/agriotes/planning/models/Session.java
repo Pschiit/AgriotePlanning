@@ -1,24 +1,25 @@
-package fr.agriote.models;
+package fr.agriotes.planning.models;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
 public class Session {
+
     private int id;
     private String intituleFormation;
     private Date dateDebut;
     private Date dateFin;
-    private ArrayList<Module> lesModules;
+    private ArrayList<Module> lesModules = new ArrayList<>();
 
     public Session() {
     }
-    
+
     public Session(int id, String intituleFormation, Date dateDebut, Date dateFin, ArrayList<Module> lesModules) {
         this.id = id;
         this.intituleFormation = intituleFormation;
         this.dateDebut = dateDebut;
         this.dateFin = dateFin;
-        this.lesModules = lesModules;
+        setLesModules(lesModules);
     }
 
     public int getId() {
@@ -58,14 +59,17 @@ public class Session {
     }
 
     public void setLesModules(ArrayList<Module> lesModules) {
-        this.lesModules = lesModules;
+        if (lesModules != null) {
+            this.lesModules = lesModules;
+        }
     }
-    
+
     @Override
     public String toString() {
-        if (dateDebut.getAnnee() == dateFin.getAnnee())
+        if (dateDebut.getAnnee() == dateFin.getAnnee()) {
             return intituleFormation + " session " + dateDebut.getAnnee();
-        return intituleFormation + " session " + dateDebut.getAnnee()+ "/" + dateFin.getAnnee();
+        }
+        return intituleFormation + " session " + dateDebut.getAnnee() + "/" + dateFin.getAnnee();
     }
 
     @Override
