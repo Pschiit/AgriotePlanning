@@ -1,24 +1,46 @@
 package fr.agriotes.planning.controllers;
 
-import fr.agriotes.planning.dao.CatalogueDao;
-import fr.agriotes.planning.models.Catalogue;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.io.IOException;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 
 public class PlanningController {
+
     @FXML
-    Catalogue catalogue;
-    
+    private Button signOutButton;
     @FXML
-    private void initialize(){
-        System.out.println("Planning loading");
+    private AnchorPane cataloguePane;
+    @FXML
+    private CatalogueController cataloguePaneController;
+
+    @FXML
+    private void initialize() {
+    }
+
+    @FXML
+    protected void handleSignOutAction(ActionEvent event) {
+        Stage stage = (Stage) signOutButton.getScene().getWindow();
         try {
-            catalogue = CatalogueDao.getPlanning();
-        } catch (SQLException ex) {
-            Logger.getLogger(PlanningController.class.getName()).log(Level.SEVERE, null, ex);
+            Parent root = FXMLLoader.load(getClass().getResource("/fr/agriotes/planning/views/Login.fxml"));
+            stage.setScene(new Scene(root, stage.getWidth(), stage.getHeight()));
+            stage.show();
+        } catch (IOException ex) {
+            System.err.println(ex.getMessage());
         }
-        catalogue.afficheCatalogue();
+    }
+
+    @FXML
+    protected void handleRefreshCatalogueAction(ActionEvent event) {
+        if(cataloguePaneController != null)
+            cataloguePaneController.initialize();
+        else
+            System.err.println("catalogueController null");
     }
 }

@@ -104,7 +104,7 @@ public class CatalogueDao {
                 + "FROM session s "
                 + "INNER JOIN formation f "
                 + "ON s.id_formation = f.id_formation "
-                + "WHERE date_debut > SUBDATE(CURRENT_DATE(), INTERVAL 3 YEAR);";
+                + "WHERE date_fin > SUBDATE(CURRENT_DATE(), INTERVAL 1 YEAR);";
         order = connection.createStatement();
         rs = order.executeQuery(sql);
         if (rs.next()) {
