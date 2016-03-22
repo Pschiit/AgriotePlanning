@@ -7,8 +7,8 @@ import static org.junit.Assert.*;
 public class CatalogueDaoTest extends DaoTest{
     @Test
     public void testGetCatalogue() throws Exception {
-        System.out.println("getC");
-        Catalogue result = CatalogueDao.getPlanning();
+        System.out.println("getCatalogue");
+        Catalogue result = CatalogueDao.getCatalogue();
         result.afficheCatalogue();
         assertNotNull(result);
         assertEquals(11, result.getLesModules().size());

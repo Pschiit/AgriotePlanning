@@ -43,7 +43,7 @@ public class LoginController {
                 saveEmail.setSelected(true);
             }
         } catch (IOException ex) {
-            actiontarget.setText(ex.getMessage());
+            System.err.println(ex.getMessage());
         }
     }
 

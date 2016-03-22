@@ -29,6 +29,7 @@
                 </ToolBar>
             </top>
             <left>
+                
             </left>
             <right>
                 <fx:include source="/fr/agriotes/planning/views/Catalogue.fxml" fx:id="cataloguePane"/>

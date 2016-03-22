@@ -44,7 +44,7 @@ public class Date extends java.sql.Date {
         this.jour = jour;
     }
         
-    public String toStringFr(){
+    public String toString(){
         return jour + " - " + mois + " - " + annee;
     }
 

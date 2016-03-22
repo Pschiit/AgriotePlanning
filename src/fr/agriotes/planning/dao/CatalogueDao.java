@@ -14,7 +14,7 @@ import java.util.HashMap;
 
 public class CatalogueDao {
 
-    public static Catalogue getPlanning() throws SQLException {
+    public static Catalogue getCatalogue() throws SQLException {
         Catalogue result = new Catalogue();
 
         //get formateur table

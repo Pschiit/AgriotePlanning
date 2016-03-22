@@ -1,10 +1,11 @@
 package fr.agriotes.planning.models;
 
+import fr.agriotes.planning.services.CatalogueServices;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Objects;
 
-public class Catalogue {
+public class Catalogue implements CatalogueServices{
 
     private HashMap<Integer, Session> lesSessions = new HashMap<>();
     private HashMap<Integer, Module> lesModules = new HashMap<>();
@@ -68,6 +69,33 @@ public class Catalogue {
             return false;
         }
         return true;
+    }
+    
+    /**
+     * @param id
+     * @return Session
+     */
+    @Override
+    public Session getSessionById(int id){
+        return lesSessions.get(id);
+    }
+    
+    /**
+     * @param id
+     * @return Module
+     */
+    @Override
+    public Module getModuleById(int id){
+        return lesModules.get(id);
+    }
+    
+    /**
+     * @param id
+     * @return Module
+     */
+    @Override
+    public Personne getFormateurById(int id){
+        return lesFormateurs.get(id);
     }
 
     public void afficheCatalogue() {
