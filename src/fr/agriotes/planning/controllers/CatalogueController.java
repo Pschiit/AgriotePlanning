@@ -4,6 +4,7 @@ import fr.agriotes.planning.dao.CatalogueDao;
 import fr.agriotes.planning.models.Catalogue;
 import fr.agriotes.planning.models.Module;
 import fr.agriotes.planning.models.Session;
+import fr.agriotes.planning.services.CatalogueDaoServices;
 import java.sql.SQLException;
 import java.util.Map;
 import javafx.beans.value.ChangeListener;
@@ -19,12 +20,13 @@ import javafx.scene.input.MouseEvent;
 
 public class CatalogueController {
 
-    @FXML
-    private Accordion accordion;
-
+    private final CatalogueDaoServices catalogueDao = new CatalogueDao();
     private Catalogue catalogue;
     private Session sessionSelectionnee;
     private Module moduleSelectionne;
+    
+    @FXML
+    private Accordion accordion;
 
     public Session getSessionSelectionnee() {
         return sessionSelectionnee;
@@ -32,7 +34,7 @@ public class CatalogueController {
 
     public void setSessionSelectionnee(Session sessionSelectionnee) {
         this.sessionSelectionnee = sessionSelectionnee;
-        System.out.println("Formation selectionné : " + sessionSelectionnee);
+        System.out.println("Formation selectionnée : " + sessionSelectionnee);
     }
 
     public Module getModuleSelectionne() {
@@ -41,14 +43,14 @@ public class CatalogueController {
 
     public void setModuleSelectionne(Module moduleSelectionne) {
         this.moduleSelectionne = moduleSelectionne;
-        System.out.println("Formation selectionné : " + moduleSelectionne);
+        System.out.println("Module selectionné : " + moduleSelectionne);
     }
 
     @FXML
     public void initialize() {
         System.out.println("Planning loading");
         try {
-            catalogue = CatalogueDao.getCatalogue();
+            catalogue = catalogueDao.getCatalogue();
         } catch (SQLException ex) {
             System.err.println(ex.getMessage());
         }
@@ -64,7 +66,7 @@ public class CatalogueController {
             titledPane.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
-                    setSessionSelectionnee(catalogue.getSessionById(key));
+                    setSessionSelectionnee(catalogue.getSession(key));
                 }
             });
 

@@ -1,7 +1,9 @@
 package fr.agriotes.planning.controllers;
 
-import fr.agriotes.planning.dao.PersonneDao;
-import fr.agriotes.planning.models.Personne;
+import fr.agriotes.planning.dao.CatalogueDao;
+import fr.agriotes.planning.dao.LoginDao;
+import fr.agriotes.planning.models.Formateur;
+import fr.agriotes.planning.services.LoginDaoServices;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -24,6 +26,8 @@ import javafx.stage.Stage;
 
 public class LoginController {
 
+    private final LoginDaoServices loginDao = new LoginDao();
+    
     @FXML
     private Text actiontarget;
     @FXML
@@ -51,18 +55,14 @@ public class LoginController {
     protected void handleSignInAction(ActionEvent event
     ) {
         try {
-            Personne utilisateur = PersonneDao.getByEmailPassword(emailField.getText(), passwordField.getText());
-            if (utilisateur != null) {
-                if (utilisateur.isAdmin()) {
-                    Stage stage = (Stage) actiontarget.getScene().getWindow();
-                    Parent root = FXMLLoader.load(getClass().getResource("/fr/agriotes/planning/views/Planning.fxml"));
-                    stage.setScene(new Scene(root, stage.getWidth(), stage.getHeight()));
-                    stage.show();
-                } else {
-                    actiontarget.setText("Vous n'etez pas autorisé(e) à modifier le planning.");
-                }
+            boolean utilisateur = loginDao.logAdminByEmailPassword(emailField.getText(), passwordField.getText());
+            if (utilisateur) {
+                Stage stage = (Stage) actiontarget.getScene().getWindow();
+                Parent root = FXMLLoader.load(getClass().getResource("/fr/agriotes/planning/views/Planning.fxml"));
+                stage.setScene(new Scene(root, stage.getWidth(), stage.getHeight()));
+                stage.show();
             } else {
-                actiontarget.setText("Email ou mot de passe incorrect.");
+                actiontarget.setText("Vous n'etez pas autorisé(e) à modifier le planning.");
             }
         } catch (Exception e) {
             actiontarget.setText(e.getMessage());
@@ -80,7 +80,7 @@ public class LoginController {
         Path path = Paths.get(System.getProperty("user.dir") + "\\build\\email.txt");
         try {
             Files.createFile(path);
-            BufferedWriter bwr = Files.newBufferedWriter(path,StandardCharsets.UTF_8, StandardOpenOption.WRITE);
+            BufferedWriter bwr = Files.newBufferedWriter(path, StandardCharsets.UTF_8, StandardOpenOption.WRITE);
             bwr.write(emailField.getText());
             bwr.close();
         } catch (IOException ex) {

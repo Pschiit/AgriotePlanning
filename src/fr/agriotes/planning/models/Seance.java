@@ -2,18 +2,18 @@ package fr.agriotes.planning.models;
 
 import java.util.Objects;
 
-class Seance {
+public class Seance {
 
     private int id;
     private Module module;
     private Session session;
-    private Personne formateur;
+    private Formateur formateur;
     private Date date;
 
     public Seance() {
     }
 
-    public Seance(int id, Module module, Session session, Personne formateur, Date date) {
+    public Seance(int id, Session session, Module module, Formateur formateur, Date date) {
         this.id = id;
         this.module = module;
         this.session = session;
@@ -45,11 +45,11 @@ class Seance {
         this.session = session;
     }
 
-    public Personne getFormateur() {
+    public Formateur getFormateur() {
         return formateur;
     }
 
-    public void setFormateur(Personne formateur) {
+    public void setFormateur(Formateur formateur) {
         this.formateur = formateur;
     }
 

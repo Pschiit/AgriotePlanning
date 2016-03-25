@@ -2,24 +2,32 @@ package fr.agriotes.planning.dao;
 
 import fr.agriotes.planning.models.Date;
 import fr.agriotes.planning.models.Module;
-import fr.agriotes.planning.models.Personne;
+import fr.agriotes.planning.models.Formateur;
 import fr.agriotes.planning.models.Catalogue;
 import fr.agriotes.planning.models.Session;
+import fr.agriotes.planning.services.CatalogueDaoServices;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
-public class CatalogueDao {
+public class CatalogueDao implements CatalogueDaoServices{
 
-    public static Catalogue getCatalogue() throws SQLException {
+    /**
+     * Get all current session, their modules and teacher from a MySQL database
+     * @return catalogue
+     * @throws SQLException
+     */
+    @Override
+    public Catalogue getCatalogue() throws SQLException {
         Catalogue result = new Catalogue();
 
         //get formateur table
-        HashMap<Integer, Personne> formateurs = new HashMap<>();
-        String sql = "SELECT id_personne, nom, prenom, mail, est_admin "
+        Map<Integer, Formateur> formateurs = new HashMap<>();
+        String sql = "SELECT id_personne, nom, prenom "
                 + "FROM personne  "
                 + "WHERE id_personne IN ( "
                 + "SELECT id_personne "
@@ -29,29 +37,29 @@ public class CatalogueDao {
         Statement order = connection.createStatement();
         ResultSet rs = order.executeQuery(sql);
         if (rs.next()) {
-            formateurs.put(rs.getInt("id_personne"), new Personne(rs.getInt("id_personne"), rs.getString("mail"), rs.getString("nom"), rs.getString("prenom"), rs.getBoolean("est_admin")));
+            formateurs.put(rs.getInt("id_personne"), new Formateur(rs.getInt("id_personne"), rs.getString("nom"), rs.getString("prenom")));
         } else {
             throw new SQLException("Table formateur vide.");
         }
         while (rs.next()) {
-            formateurs.put(rs.getInt("id_personne"), new Personne(rs.getInt("id_personne"), rs.getString("mail"), rs.getString("nom"), rs.getString("prenom"), rs.getBoolean("est_admin")));
+            formateurs.put(rs.getInt("id_personne"), new Formateur(rs.getInt("id_personne"), rs.getString("nom"), rs.getString("prenom")));
         }
         order.close();
 
         //get intervenant table
-        HashMap<Integer, ArrayList<Personne>> intervenants = new HashMap<>();
+        Map<Integer, ArrayList<Formateur>> intervenants = new HashMap<>();
         sql = "SELECT * FROM intervenant;";
         order = connection.createStatement();
         rs = order.executeQuery(sql);
         if (rs.next()) {
-            intervenants.put(rs.getInt("id_module"), new ArrayList<Personne>());
+            intervenants.put(rs.getInt("id_module"), new ArrayList<Formateur>());
             intervenants.get(rs.getInt("id_module")).add(formateurs.get(rs.getInt("id_personne")));
         } else {
             throw new SQLException("Table intervenant vide.");
         }
         while (rs.next()) {
             if (!intervenants.containsKey(rs.getInt("id_module"))) {
-                intervenants.put(rs.getInt("id_module"), new ArrayList<Personne>());
+                intervenants.put(rs.getInt("id_module"), new ArrayList<Formateur>());
             }
             intervenants.get(rs.getInt("id_module")).add(formateurs.get(rs.getInt("id_personne")));
 
@@ -59,7 +67,7 @@ public class CatalogueDao {
         order.close();
 
         //get module table
-        HashMap<Integer, Module> modules = new HashMap<>();
+        Map<Integer, Module> modules = new HashMap<>();
         sql = "SELECT id_module, intitule, nb_jours "
                 + "FROM module m "
                 + "WHERE id_module IN ( "
@@ -79,7 +87,7 @@ public class CatalogueDao {
         order.close();
 
         //get module_formation table
-        HashMap<Integer, ArrayList<Module>> moduleFormation = new HashMap<>();
+        Map<Integer, ArrayList<Module>> moduleFormation = new HashMap<>();
         sql = "SELECT * FROM module_formation;";
         order = connection.createStatement();
         rs = order.executeQuery(sql);
@@ -99,7 +107,7 @@ public class CatalogueDao {
         order.close();
 
         //get session table
-        HashMap<Integer, Session> sessions = new HashMap<>();
+        Map<Integer, Session> sessions = new HashMap<>();
         sql = "SELECT s.id_session, s.id_formation, s.date_debut,s.date_fin, f.intitule "
                 + "FROM session s "
                 + "INNER JOIN formation f "

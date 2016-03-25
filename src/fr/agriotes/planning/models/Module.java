@@ -1,22 +1,23 @@
 package fr.agriotes.planning.models;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Module {
 
     private int id;
     private String intitule;
-    private int nombreJours;
-    private ArrayList<Personne> formateurs = new ArrayList<>();
+    private int nombreJoursPlanifies;
+    private int nombreJoursTotal;
+    private List<Formateur> formateurs;
 
     public Module() {
     }
 
-    public Module(int id, String intitule, int nombreJours, ArrayList<Personne> formateurs) {
+    public Module(int id, String intitule, int nombreJours, List<Formateur> formateurs) {
         this.id = id;
         this.intitule = intitule;
-        this.nombreJours = nombreJours;
+        this.nombreJoursTotal = nombreJours;
         setFormateurs(formateurs);
     }
 
@@ -36,19 +37,19 @@ public class Module {
         this.intitule = intitule;
     }
 
-    public int getNombreJours() {
-        return nombreJours;
+    public int getNombreJoursTotal() {
+        return nombreJoursTotal;
     }
 
-    public void setNombreJours(int nombreJours) {
-        this.nombreJours = nombreJours;
+    public void setNombreJoursTotal(int nombreJoursTotal) {
+        this.nombreJoursTotal = nombreJoursTotal;
     }
 
-    public ArrayList<Personne> getFormateurs() {
+    public List<Formateur> getFormateurs() {
         return formateurs;
     }
 
-    public void setFormateurs(ArrayList<Personne> formateurs) {
+    public void setFormateurs(List<Formateur> formateurs) {
         if (formateurs != null) {
             this.formateurs = formateurs;
         }
@@ -64,7 +65,7 @@ public class Module {
         int hash = 7;
         hash = 71 * hash + this.id;
         hash = 71 * hash + Objects.hashCode(this.intitule);
-        hash = 71 * hash + this.nombreJours;
+        hash = 71 * hash + this.nombreJoursTotal;
         hash = 71 * hash + Objects.hashCode(this.formateurs);
         return hash;
     }
@@ -84,7 +85,7 @@ public class Module {
         if (this.id != other.id) {
             return false;
         }
-        if (this.nombreJours != other.nombreJours) {
+        if (this.nombreJoursTotal != other.nombreJoursTotal) {
             return false;
         }
         if (!Objects.equals(this.intitule, other.intitule)) {

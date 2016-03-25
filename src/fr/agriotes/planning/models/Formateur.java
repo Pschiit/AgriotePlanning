@@ -2,39 +2,27 @@ package fr.agriotes.planning.models;
 
 import java.util.Objects;
 
-public class Personne {
+public class Formateur {
 
     private int id;
-    private String email;
     private String nom;
     private String prenom;
-    private boolean admin;
 
-    public Personne() {
+    public Formateur() {
     }
 
-    public Personne(int id, String email, String nom, String prenom, boolean admin) {
+    public Formateur(int id, String nom, String prenom) {
         this.id = id;
-        this.email = email;
         this.nom = nom;
         this.prenom = prenom;
-        this.admin = admin;
     }
-
+    
     public int getId() {
         return id;
     }
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getNom() {
@@ -52,15 +40,7 @@ public class Personne {
     public void setPrenom(String prenom) {
         this.prenom = prenom;
     }
-
-    public boolean isAdmin() {
-        return admin;
-    }
-
-    public void setAdmin(boolean estAdmin) {
-        this.admin = estAdmin;
-    }
-
+    
     @Override
     public String toString() {
         return prenom + " " + nom;
@@ -69,11 +49,9 @@ public class Personne {
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 47 * hash + this.id;
-        hash = 47 * hash + Objects.hashCode(this.email);
-        hash = 47 * hash + Objects.hashCode(this.nom);
-        hash = 47 * hash + Objects.hashCode(this.prenom);
-        hash = 47 * hash + (this.admin ? 1 : 0);
+        hash = 53 * hash + this.id;
+        hash = 53 * hash + Objects.hashCode(this.nom);
+        hash = 53 * hash + Objects.hashCode(this.prenom);
         return hash;
     }
 
@@ -88,14 +66,8 @@ public class Personne {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Personne other = (Personne) obj;
+        final Formateur other = (Formateur) obj;
         if (this.id != other.id) {
-            return false;
-        }
-        if (this.admin != other.admin) {
-            return false;
-        }
-        if (!Objects.equals(this.email, other.email)) {
             return false;
         }
         if (!Objects.equals(this.nom, other.nom)) {

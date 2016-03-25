@@ -1,14 +1,15 @@
 package fr.agriotes.planning.dao;
 
-import fr.agriotes.planning.dao.CatalogueDao;
 import fr.agriotes.planning.models.Catalogue;
+import fr.agriotes.planning.services.CatalogueDaoServices;
 import org.junit.Test;
 import static org.junit.Assert.*;
 public class CatalogueDaoTest extends DaoTest{
     @Test
     public void testGetCatalogue() throws Exception {
         System.out.println("getCatalogue");
-        Catalogue result = CatalogueDao.getCatalogue();
+        CatalogueDaoServices catalogueDao = new CatalogueDao();
+        Catalogue result = catalogueDao.getCatalogue();
         result.afficheCatalogue();
         assertNotNull(result);
         assertEquals(11, result.getLesModules().size());

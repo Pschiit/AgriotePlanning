@@ -1,6 +1,6 @@
 package fr.agriotes.planning.models;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Session {
@@ -9,12 +9,12 @@ public class Session {
     private String intituleFormation;
     private Date dateDebut;
     private Date dateFin;
-    private ArrayList<Module> lesModules = new ArrayList<>();
+    private List<Module> lesModules;
 
     public Session() {
     }
 
-    public Session(int id, String intituleFormation, Date dateDebut, Date dateFin, ArrayList<Module> lesModules) {
+    public Session(int id, String intituleFormation, Date dateDebut, Date dateFin, List<Module> lesModules) {
         this.id = id;
         this.intituleFormation = intituleFormation;
         this.dateDebut = dateDebut;
@@ -54,11 +54,11 @@ public class Session {
         this.dateFin = dateFin;
     }
 
-    public ArrayList<Module> getLesModules() {
+    public List<Module> getLesModules() {
         return lesModules;
     }
 
-    public void setLesModules(ArrayList<Module> lesModules) {
+    public void setLesModules(List<Module> lesModules) {
         if (lesModules != null) {
             this.lesModules = lesModules;
         }

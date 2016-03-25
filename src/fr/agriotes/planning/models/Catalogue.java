@@ -1,40 +1,40 @@
 package fr.agriotes.planning.models;
 
 import fr.agriotes.planning.services.CatalogueServices;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 
-public class Catalogue implements CatalogueServices{
+public class Catalogue implements CatalogueServices {
 
-    private HashMap<Integer, Session> lesSessions = new HashMap<>();
-    private HashMap<Integer, Module> lesModules = new HashMap<>();
-    private HashMap<Integer, Personne> lesFormateurs = new HashMap<>();
+    private Map<Integer, Session> lesSessions;
+    private Map<Integer, Module> lesModules;
+    private Map<Integer, Formateur> lesFormateurs;
 
     public Catalogue() {
     }
 
-    public HashMap<Integer, Session> getLesSessions() {
+    public Map<Integer, Session> getLesSessions() {
         return lesSessions;
     }
 
-    public void setLesSessions(HashMap<Integer, Session> lesSessions) {
+    public void setLesSessions(Map<Integer, Session> lesSessions) {
         this.lesSessions = lesSessions;
     }
 
-    public HashMap<Integer, Module> getLesModules() {
+    public Map<Integer, Module> getLesModules() {
         return lesModules;
     }
 
-    public void setLesModules(HashMap<Integer, Module> lesModules) {
+    public void setLesModules(Map<Integer, Module> lesModules) {
         this.lesModules = lesModules;
     }
 
-    public HashMap<Integer, Personne> getLesFormateurs() {
+    public Map<Integer, Formateur> getLesFormateurs() {
         return lesFormateurs;
     }
 
-    public void setLesFormateurs(HashMap<Integer, Personne> lesFormateurs) {
+    public void setLesFormateurs(Map<Integer, Formateur> lesFormateurs) {
         this.lesFormateurs = lesFormateurs;
     }
 
@@ -70,49 +70,35 @@ public class Catalogue implements CatalogueServices{
         }
         return true;
     }
-    
+
     /**
+     * return session from lesSession by id
+     *
      * @param id
      * @return Session
      */
     @Override
-    public Session getSessionById(int id){
+    public Session getSession(int id) {
         return lesSessions.get(id);
     }
-    
+
     /**
+     * return module from lesModules by id
+     *
      * @param id
      * @return Module
      */
     @Override
-    public Module getModuleById(int id){
+    public Module getModule(int id) {
         return lesModules.get(id);
     }
-    
+
     /**
      * @param id
      * @return Module
      */
     @Override
-    public Personne getFormateurById(int id){
+    public Formateur getFormateur(int id) {
         return lesFormateurs.get(id);
-    }
-
-    public void afficheCatalogue() {
-        System.out.println("Liste des sessions :");
-        for (Entry<Integer, Session> entry : lesSessions.entrySet()) {
-            int key = entry.getKey();
-            Session value = entry.getValue();
-            System.out.println(key + " : " + value);
-            System.out.println("\tModules : ");
-            for (Module leModule : value.getLesModules()) {
-                System.out.print("\t" + leModule.getId() + " : " + leModule);
-                System.out.print(" Formateur(s) : ");
-                for (Personne leFormateur : leModule.getFormateurs()) {
-                    System.out.print(leFormateur.getId() + "-" + leFormateur + " ");
-                }
-                System.out.println();
-            }
-        }
     }
 }
