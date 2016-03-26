@@ -10,7 +10,6 @@ public class CatalogueDaoTest extends DaoTest{
         System.out.println("getCatalogue");
         CatalogueDaoServices catalogueDao = new CatalogueDao();
         Catalogue result = catalogueDao.getCatalogue();
-        result.afficheCatalogue();
         assertNotNull(result);
         assertEquals(11, result.getLesModules().size());
         assertEquals(6, result.getLesSessions().size());
