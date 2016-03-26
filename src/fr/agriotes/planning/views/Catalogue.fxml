@@ -8,7 +8,7 @@
 <?import javafx.scene.text.*?>
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" id="catalogue-pane" styleClass="mainFxmlClass" fx:controller="fr.agriotes.planning.controllers.CatalogueController">
-    <Accordion fx:id="accordion" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0"   >
+    <Accordion fx:id="accordion" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
     </Accordion>
     <stylesheets>
         <URL value="@/fr/agriotes/planning/content/css/catalogue.css"/>

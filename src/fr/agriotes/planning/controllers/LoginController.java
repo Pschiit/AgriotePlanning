@@ -27,7 +27,7 @@ import javafx.stage.Stage;
 public class LoginController {
 
     private final LoginDaoServices loginDao = new LoginDao();
-    
+
     @FXML
     private Text actiontarget;
     @FXML
@@ -45,6 +45,7 @@ public class LoginController {
             if ((line = in.readLine()) != null) {
                 emailField.setText(line);
                 saveEmail.setSelected(true);
+                passwordField.requestFocus();
             }
         } catch (IOException ex) {
             System.err.println(ex.getMessage());
@@ -57,14 +58,14 @@ public class LoginController {
         try {
             boolean utilisateur = loginDao.logAdminByEmailPassword(emailField.getText(), passwordField.getText());
             if (utilisateur) {
-                Stage stage = (Stage) actiontarget.getScene().getWindow();
-                Parent root = FXMLLoader.load(getClass().getResource("/fr/agriotes/planning/views/Planning.fxml"));
-                stage.setScene(new Scene(root, stage.getWidth(), stage.getHeight()));
-                stage.show();
+                goToPlanning();
             } else {
                 actiontarget.setText("Vous n'etez pas autorisé(e) à modifier le planning.");
             }
-        } catch (Exception e) {
+        } catch(AssertionError ae){
+            actiontarget.setText(ae.getMessage());
+        }
+        catch (Exception e) {
             actiontarget.setText(e.getMessage());
         }
         if (saveEmail.isSelected()) {
@@ -95,6 +96,13 @@ public class LoginController {
         } catch (IOException ex) {
             actiontarget.setText(ex.getMessage());
         }
+    }
+
+    private void goToPlanning() throws IOException {
+        Stage stage = (Stage) actiontarget.getScene().getWindow();
+        Parent root = FXMLLoader.load(getClass().getResource("/fr/agriotes/planning/views/Planning.fxml"));
+        stage.setScene(new Scene(root, stage.getWidth(), stage.getHeight()));
+        stage.show();
     }
 
 }

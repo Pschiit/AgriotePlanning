@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
 public class PlanningController {
 
@@ -25,11 +26,8 @@ public class PlanningController {
 
     @FXML
     protected void handleSignOutAction(ActionEvent event) {
-        Stage stage = (Stage) signOutButton.getScene().getWindow();
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/fr/agriotes/planning/views/Login.fxml"));
-            stage.setScene(new Scene(root, stage.getWidth(), stage.getHeight()));
-            stage.show();
+            goToLogin();
         } catch (IOException ex) {
             System.err.println(ex.getMessage());
         }
@@ -39,5 +37,13 @@ public class PlanningController {
     protected void handleRefreshCatalogueAction(ActionEvent event) {
         assert cataloguePaneController != null : "catalogueController null";
         cataloguePaneController.initialize();
+        cataloguePaneController.setModuleSelectionne(null);
+    }
+
+    private void goToLogin() throws IOException {
+        Stage stage = (Stage) signOutButton.getScene().getWindow();
+        Parent root = FXMLLoader.load(getClass().getResource("/fr/agriotes/planning/views/Login.fxml"));
+        stage.setScene(new Scene(root, stage.getWidth(), stage.getHeight()));
+        stage.show();
     }
 }
