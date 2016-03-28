@@ -1,11 +1,9 @@
 package fr.agriotes.planning.models;
 
-import fr.agriotes.planning.services.CatalogueServices;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 
-public class Catalogue implements CatalogueServices {
+public class Catalogue {
 
     private Map<Integer, Session> lesSessions;
     private Map<Integer, Module> lesModules;
@@ -71,33 +69,14 @@ public class Catalogue implements CatalogueServices {
         return true;
     }
 
-    /**
-     * return session from lesSession by id
-     *
-     * @param id
-     * @return Session
-     */
-    @Override
     public Session getSession(int id) {
         return lesSessions.get(id);
     }
 
-    /**
-     * return module from lesModules by id
-     *
-     * @param id
-     * @return Module
-     */
-    @Override
     public Module getModule(int id) {
         return lesModules.get(id);
     }
 
-    /**
-     * @param id
-     * @return Module
-     */
-    @Override
     public Formateur getFormateur(int id) {
         return lesFormateurs.get(id);
     }

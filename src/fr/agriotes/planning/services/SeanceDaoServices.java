@@ -8,13 +8,15 @@ import java.util.List;
 
 public interface SeanceDaoServices {
 
-    Seance addSeance(Seance seance);
+    Seance addSeance(Seance seance)throws SQLException ;
 
     List<SeanceRaw> getSeancesByIdSession(int idSession) throws SQLException;
 
     List<SeanceRaw> getSeancesByWeek(Date firstDay, Date LastDay) throws SQLException;
+    
+    List<SeanceRaw> getSeancesByDate(Date date) throws SQLException;
 
-    Seance updateSeance(int id, Seance seance);
+    SeanceRaw updateSeance(int id, Seance seance);
 
-    Seance removeSeance(Seance seance);
+    SeanceRaw removeSeance(Seance seance);
 }

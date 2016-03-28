@@ -1,5 +1,6 @@
 package fr.agriotes.planning.controllers;
 
+import fr.agriotes.planning.services.CatalogueService;
 import fr.agriotes.planning.models.Catalogue;
 import fr.agriotes.planning.models.Module;
 import fr.agriotes.planning.models.Session;
@@ -21,7 +22,7 @@ import javafx.util.Callback;
 public class CatalogueController {
 
     private Catalogue catalogue;
-    private PlanningController planningController;
+    private CatalogueService catalogueService;
 
     public Catalogue getCatalogue() {
         return catalogue;
@@ -32,12 +33,12 @@ public class CatalogueController {
         initialize();
     }
 
-    public PlanningController getPlanningController() {
-        return planningController;
+    public CatalogueService getCatalogueService() {
+        return catalogueService;
     }
 
-    public void setPlanningController(PlanningController planningController) {
-        this.planningController = planningController;
+    public void setCatalogueService(CatalogueService catalogueService) {
+        this.catalogueService = catalogueService;
     }
 
     @FXML
@@ -45,7 +46,7 @@ public class CatalogueController {
 
     @FXML
     public void initialize() {
-        if (planningController != null) {
+        if (catalogueService != null) {
             paint();
         }
     }
@@ -66,13 +67,13 @@ public class CatalogueController {
                 //Selectionne la Session à planifier
                 @Override
                 public void handle(MouseEvent event) {
-                    planningController.setSessionSelectionnee(laSession);
+                    catalogueService.setSessionSelectionnee(laSession);
                 }
             });
             //Si pas de selection selectionne le premier
             if (titlePaneSelectionnee == null) {
                 titlePaneSelectionnee = titledPane;
-                planningController.setSessionSelectionnee(laSession);
+                catalogueService.setSessionSelectionnee(laSession);
             }
 
             //creation de la ListView de moduleCell
@@ -85,7 +86,7 @@ public class CatalogueController {
                 //Selectionne le module à planifier
                 @Override
                 public void changed(ObservableValue<? extends Module> observable, Module oldValue, Module newValue) {
-                    CatalogueController.this.planningController.setModuleSelectionne(newValue);
+                    CatalogueController.this.catalogueService.setModuleSelectionne(newValue);
                 }
             });
             modulesDeLaSession.setCellFactory(new Callback<ListView<Module>, ListCell<Module>>() {

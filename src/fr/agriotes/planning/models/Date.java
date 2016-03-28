@@ -2,8 +2,13 @@ package fr.agriotes.planning.models;
 
 public class Date extends java.sql.Date {
 
-    public static final String[] MOIS = {"", "JANVIER", "FEVRIER", "MARS", "AVRIL", "MAI", "JUIN", "JUILLET", "AOUT", "SEPTEMBRE", "OCTOBRE", "NOVEMBRE", "DECEMBRE"};
-    public static final String[] JOUR = {"", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"};
+    public enum MOIS {
+        NONE,JANVIER, FEVRIER, MARS, AVRIl, MAI, JUIN, JUILLET, AOUT, SEPTEMBRE, OCTOBRE, NOVEMBRE, DECEMBRE
+    }
+
+    public enum JOUR {
+        DIMANCHE,LUNDI,MARDI,MERCREDI,JEUDI,VENDREDI,SAMEDI
+    }
     
     private int annee;
     private int mois;

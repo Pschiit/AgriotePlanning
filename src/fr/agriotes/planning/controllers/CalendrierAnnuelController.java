@@ -5,6 +5,7 @@ import fr.agriotes.planning.models.Module;
 import fr.agriotes.planning.models.Seance;
 import fr.agriotes.planning.models.CalendarCell;
 import fr.agriotes.planning.models.Session;
+import fr.agriotes.planning.services.CalendrierService;
 import fr.agriotes.planning.services.PlanningServices;
 import java.util.Map;
 import javafx.event.EventHandler;
@@ -16,17 +17,17 @@ import javafx.scene.layout.HBox;
 
 public class CalendrierAnnuelController {
 
-    private PlanningServices planning;
+    private CalendrierService calendrierService;
     private Map<Integer, Seance> lesSeances;
     private Session sessionSelectionnee;
     private Module moduleSelectionne;
 
-    public PlanningServices getPlanning() {
-        return planning;
+    public CalendrierService getCalendrierService() {
+        return calendrierService;
     }
 
-    public void setPlanning(PlanningServices planning) {
-        this.planning = planning;
+    public void setCalendrierService(CalendrierService calendrierService) {
+        this.calendrierService = calendrierService;
     }
 
     public Map<Integer, Seance> getLesSeances() {
@@ -43,6 +44,7 @@ public class CalendrierAnnuelController {
 
     public void setSessionSelectionnee(Session sessionSelectionnee) {
         this.sessionSelectionnee = sessionSelectionnee;
+        setModuleSelectionne(null);
         initialize();
     }
 
@@ -75,7 +77,7 @@ public class CalendrierAnnuelController {
             int moisDebut = sessionSelectionnee.getDateDebut().getMois();
             for (int i = 0; i < nbMois; i++) {
                 int mois = (moisDebut + i - 1) % 12 + 1;
-                Label headerMois = new Label(Date.MOIS[mois]);
+                Label headerMois = new Label(Date.MOIS.values()[mois].toString());
                 headerMois.setMaxWidth(80.0);
                 headerMois.setMaxHeight(25.0);
                 headerMois.getStyleClass().add("calendrier-cell");
@@ -128,7 +130,7 @@ public class CalendrierAnnuelController {
     private HBox inactiveCell(Date date) {
         HBox cell = new HBox();
         Label labelNumero = new Label(String.valueOf(date.getJour()));
-        Label labelJour = new Label(Date.JOUR[date.getDay() + 1].charAt(0) + "");
+        Label labelJour = new Label(Date.JOUR.values()[date.getDay()].toString().charAt(0) + "");
         Label labelSeance = new Label();
         labelNumero.setMinWidth(15);
         labelJour.setMinWidth(15);
@@ -141,12 +143,16 @@ public class CalendrierAnnuelController {
     }
 
     private CalendarCell emptyCell(final Date date) {
-        CalendarCell cell = new CalendarCell(date);
+        final CalendarCell cell = new CalendarCell(date);
         cell.setOnMouseClicked(new EventHandler<MouseEvent>() {
             //Selectionne la Session à planifier
             @Override
             public void handle(MouseEvent event) {
-                System.out.println(date);
+                if(cell.getSeance() == null){
+                    Seance seance = calendrierService.addSeance(new Seance(0,sessionSelectionnee, moduleSelectionne, moduleSelectionne.getFormateurs().get(0), date));
+                    lesSeances.put(seance.getId(),seance);
+                    cell.setSeance(seance);
+                }
             }
         });
         return cell;

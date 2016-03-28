@@ -15,8 +15,29 @@ import java.util.List;
 public class SeanceDao implements SeanceDaoServices {
 
     @Override
-    public Seance addSeance(Seance seance) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Seance addSeance(Seance seance) throws SQLException {
+        Seance result = null;
+        String sql = "INSERT INTO seance(id_module, id_session, id_formateur, jour) VAlUES(?,?,?,?);";
+        Connection connection = Database.getConnection();
+        PreparedStatement order = connection.prepareStatement(sql);
+        order.setInt(1, seance.getModule().getId());
+        order.setInt(2, seance.getSession().getId());
+        order.setInt(3, seance.getFormateur().getId());
+        order.setDate(4, seance.getDate().toSQLDate());
+        int rsUpdate = order.executeUpdate();
+        
+        sql = "SELECT id_seance FROM seance WHERE (id_formateur = ? AND id_session = ? ) AND jour = ?;";
+        order = connection.prepareStatement(sql);
+        order.setInt(1, seance.getFormateur().getId());
+        order.setInt(2, seance.getSession().getId());
+        order.setDate(3, seance.getDate().toSQLDate());
+        ResultSet rs = order.executeQuery();
+        if (rs.next()) {
+            result = new Seance(rs.getInt("id_seance"), seance.getSession(), seance.getModule(), seance.getFormateur(), seance.getDate());
+        }
+        order.close();
+        connection.close();
+        return result;
     }
 
     @Override
@@ -28,8 +49,9 @@ public class SeanceDao implements SeanceDaoServices {
         order.setInt(1, idSession);
         ResultSet rs = order.executeQuery();
         while (rs.next()) {
-            if(result == null)
+            if (result == null) {
                 result = new ArrayList<>();
+            }
             result.add(new SeanceRaw(rs.getInt("id_seance"), rs.getInt("id_session"), rs.getInt("id_module"), rs.getInt("id_formateur"), Date.FromSQLDate(rs.getDate("jour"))));
         }
         order.close();
@@ -43,12 +65,31 @@ public class SeanceDao implements SeanceDaoServices {
     }
 
     @Override
-    public Seance updateSeance(int id, Seance seance) {
+    public List<SeanceRaw> getSeancesByDate(Date date) throws SQLException {
+        List<SeanceRaw> result = null;
+        String sql = "SELECT * FROM seance WHERE date = ?";
+        Connection connection = Database.getConnection();
+        PreparedStatement order = connection.prepareStatement(sql);
+        order.setDate(1, date.toSQLDate());
+        ResultSet rs = order.executeQuery();
+        while (rs.next()) {
+            if (result == null) {
+                result = new ArrayList<>();
+            }
+            result.add(new SeanceRaw(rs.getInt("id_seance"), rs.getInt("id_session"), rs.getInt("id_module"), rs.getInt("id_formateur"), Date.FromSQLDate(rs.getDate("jour"))));
+        }
+        order.close();
+        connection.close();
+        return result;
+    }
+
+    @Override
+    public SeanceRaw updateSeance(int id, Seance seance) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Seance removeSeance(Seance seance) {
+    public SeanceRaw removeSeance(Seance seance) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

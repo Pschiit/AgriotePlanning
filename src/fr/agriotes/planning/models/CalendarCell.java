@@ -18,6 +18,8 @@ public class CalendarCell extends HBox {
     public void setSeance(Seance seance) {
         this.seance = seance;
         labelSeance.setText(seance.toStringShort());
+        Color[] colors = Color.values();
+        this.setStyle("-fx-background-color:" + colors[seance.getModule().getId() % colors.length]);
     }
 
     public Date getDate() {
@@ -27,7 +29,7 @@ public class CalendarCell extends HBox {
     public void setDate(Date date) {
         this.date = date;
         labelNumero.setText(String.valueOf(date.getJour()));
-        labelJour.setText(Date.JOUR[date.getDay() + 1].charAt(0) + "");
+        labelJour.setText(Date.JOUR.values()[date.getDay()].toString().charAt(0) + "");
     }
 
     public Label getLabelJour() {
@@ -63,7 +65,7 @@ public class CalendarCell extends HBox {
         labelNumero.setMinWidth(15);
         labelJour.setMinWidth(15);
         labelSeance.setMinWidth(40);
-        this.getChildren().addAll(labelNumero,labelJour,labelSeance);
+        this.getChildren().addAll(labelNumero, labelJour, labelSeance);
         labelNumero.getStyleClass().add("jour-cell");
         labelJour.getStyleClass().add("jour-cell");
         labelSeance.getStyleClass().add("seance-cell");

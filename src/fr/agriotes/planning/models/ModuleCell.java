@@ -13,7 +13,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 
-public class ModuleCell extends ListCell<Module>{
+public class ModuleCell extends ListCell<Module> {
 
     HBox hbox = new HBox();
     Label label = new Label("(empty)");
@@ -49,6 +49,10 @@ public class ModuleCell extends ListCell<Module>{
             lastItem = item;
             label.setText(item != null ? item.toString() : "<null>");
             setGraphic(hbox);
+        }
+        if (item != null) {
+            Color[] colors = Color.values();
+            button.setStyle("-fx-background-color:" + colors[item.getId() % colors.length]);
         }
     }
 }
