@@ -64,10 +64,11 @@ public class Session {
 
     @Override
     public String toString() {
+        String intitule = intituleFormation.length() > 40 ? intituleFormation.substring(0, 40): intituleFormation;
         if (dateDebut.getAnnee() == dateFin.getAnnee()) {
-            return intituleFormation + " session " + dateDebut.getAnnee();
+            return intitule + " session " + dateDebut.getAnnee();
         }
-        return intituleFormation + " session " + dateDebut.getAnnee() + "/" + dateFin.getAnnee();
+        return intitule + " session " + dateDebut.getAnnee() + "/" + dateFin.getAnnee();
     }
 
     @Override

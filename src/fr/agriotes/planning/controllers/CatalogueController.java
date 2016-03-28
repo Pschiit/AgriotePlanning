@@ -94,7 +94,6 @@ public class CatalogueController {
                     return new ModuleCell();
                 }
             });
-
             titledPane.setContent(modulesDeLaSession);
             accordion.getPanes().add(titledPane);
             if (titledPane.getText().equals(titlePaneSelectionnee.getText())) {

@@ -1,5 +1,16 @@
 .calendrier-cell{
-    -fx-alignment: center; -fx-border-color: black;
+    -fx-border-color: black;
+    -fx-alignment: center;
+}
+
+.jour-cell{
+    -fx-border-color: black;
+    -fx-border-width: 0.5;
+    -fx-alignment: center;
+}
+
+.seance-cell{
+    -fx-alignment: center;
 }
 
 .inactive-cell{

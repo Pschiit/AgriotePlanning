@@ -1,23 +1,27 @@
 package fr.agriotes.planning.models;
 
 public class Date extends java.sql.Date {
+
+    public static final String[] MOIS = {"", "JANVIER", "FEVRIER", "MARS", "AVRIL", "MAI", "JUIN", "JUILLET", "AOUT", "SEPTEMBRE", "OCTOBRE", "NOVEMBRE", "DECEMBRE"};
+    public static final String[] JOUR = {"", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"};
+    
     private int annee;
     private int mois;
     private int jour;
-    
+
     public Date(int annee, int mois, int jour) {
-        super(annee-1900, mois -1, jour);
+        super(annee - 1900, mois - 1, jour);
         this.annee = annee;
         this.mois = mois;
         this.jour = jour;
     }
-    
-    public static Date FromSQLDate(java.sql.Date date){
-        return new Date(date.getYear() + 1900,date.getMonth() + 1, date.getDate());
+
+    public static Date FromSQLDate(java.sql.Date date) {
+        return new Date(date.getYear() + 1900, date.getMonth() + 1, date.getDate());
     }
-    
-    public java.sql.Date toSQLDate(){
-        return new java.sql.Date(getYear(),getMonth(),getDate());
+
+    public java.sql.Date toSQLDate() {
+        return new java.sql.Date(getYear(), getMonth(), getDate());
     }
 
     public int getAnnee() {
@@ -43,8 +47,8 @@ public class Date extends java.sql.Date {
     public void setJour(int jour) {
         this.jour = jour;
     }
-        
-    public String toString(){
+
+    public String toString() {
         return jour + " - " + mois + " - " + annee;
     }
 
@@ -80,8 +84,53 @@ public class Date extends java.sql.Date {
         }
         return true;
     }
-    
-    public boolean isBisextile(){
-        return ( annee % 400 == 0) || ((annee % 4 == 0) && (annee % 100 != 0));
+
+    public boolean isBisextile() {
+        return (annee % 400 == 0) || ((annee % 4 == 0) && (annee % 100 != 0));
+    }
+
+    public boolean isFerie() {
+        if (mois == 1 && jour == 1
+                || (mois == 4 && (jour == 1 || jour == 8))
+                || (mois == 7 && jour == 14)
+                || (mois == 8 && jour == 15)
+                || (mois == 11 && (jour == 1 || jour == 11))
+                || (mois == 12 && jour == 25)) {
+            return true;
+        }
+        Date pacques = calculLundiPacques(this.annee);
+        int moisPacques = pacques.mois;
+        int jourPacques = pacques.jour;
+        int jourAscencion = jourPacques + 38;
+        int moisAscencion = moisPacques;
+        int jourPentecote = jourPacques + 49;
+        int moisPentecote = moisPacques;
+        if ((mois == moisPacques && jour == jourPacques)
+                || (mois == moisAscencion && jour == jourAscencion)
+                || (mois == moisPentecote && jour == jourPentecote)) {
+            return true;
+        }
+        return false;
+    }
+
+    public Date calculLundiPacques(int annee) {
+        int a = annee / 100;
+        int b = annee % 100;
+        int c = (3 * (a + 25)) / 4;
+        int d = (3 * (a + 25)) % 4;
+        int e = (8 * (a + 11)) / 25;
+        int f = (5 * a + b) % 19;
+        int g = (19 * f + c - e) % 30;
+        int h = (f + 11 * g) / 319;
+        int j = (60 * (5 - d) + b) / 4;
+        int k = (60 * (5 - d) + b) % 4;
+        int m = (2 * j - k - g + h) % 7;
+        int n = (g - h + m + 114) / 31;
+        int p = (g - h + m + 114) % 31;
+        int jour = p + 1;
+        int mois = n;
+
+        Date date = new Date(annee, mois, jour);
+        return date;
     }
 }

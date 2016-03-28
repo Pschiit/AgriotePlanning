@@ -1,10 +1,9 @@
 package fr.agriotes.planning.controllers;
 
-import fr.agriotes.planning.models.Constant;
 import fr.agriotes.planning.models.Date;
 import fr.agriotes.planning.models.Module;
 import fr.agriotes.planning.models.Seance;
-import fr.agriotes.planning.models.SeanceCell;
+import fr.agriotes.planning.models.CalendarCell;
 import fr.agriotes.planning.models.Session;
 import fr.agriotes.planning.services.PlanningServices;
 import java.util.Map;
@@ -13,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 
 public class CalendrierAnnuelController {
 
@@ -73,69 +73,75 @@ public class CalendrierAnnuelController {
             sessionTitle.setText(sessionSelectionnee.toString());
             int nbMois = sessionSelectionnee.getNombreDeMois();
             int moisDebut = sessionSelectionnee.getDateDebut().getMois();
-            for (int j = 0; j < 31; j++) {
-                Label headerJour = new Label("" + (j + 1));
-                headerJour.setPrefWidth(50.0);
-                headerJour.setPrefHeight(20.0);
-                headerJour.getStyleClass().add("calendrier-cell");
-                calendrierGridPane.add(headerJour, 1, j + 2);
-            }
             for (int i = 0; i < nbMois; i++) {
                 int mois = (moisDebut + i - 1) % 12 + 1;
-                Label headerMois = new Label(Constant.MOIS[mois]);
-                headerMois.setPrefWidth(80.0);
-                headerMois.setPrefHeight(20.0);
+                Label headerMois = new Label(Date.MOIS[mois]);
+                headerMois.setMaxWidth(80.0);
+                headerMois.setMaxHeight(25.0);
                 headerMois.getStyleClass().add("calendrier-cell");
                 calendrierGridPane.add(headerMois, i + 2, 1);
                 for (int j = 0; j < 31; j++) {
+                    int jour = j + 1;
+                    int annee = moisDebut + i < 12 ? sessionSelectionnee.getDateDebut().getAnnee() : sessionSelectionnee.getDateFin().getAnnee();
+                    Date date = new Date(annee, mois, jour);
                     //Inactive cell
-                    if ((i == 0 && j + 1 < sessionSelectionnee.getDateDebut().getJour())) {//Jour avant le début{
-                        calendrierGridPane.add(inactiveCell(), i + 2, j + 2);
-                    } else if ((i == nbMois - 1 && j >= sessionSelectionnee.getDateFin().getJour())) {//Jour après la fin
-                        calendrierGridPane.add(inactiveCell(), i + 2, j + 2);
-                    } else if (mois == 2 && j > 27 && !(j == 28 && (moisDebut + i < 12 && sessionSelectionnee.getDateDebut().isBisextile()) || (moisDebut + i > 12 && sessionSelectionnee.getDateFin().isBisextile()))) {//Fevrier
-                        calendrierGridPane.add(inactiveCell(), i + 2, j + 2);
+                    if ((i == 0 && jour < sessionSelectionnee.getDateDebut().getJour())) {//Jour avant le début{
+                        calendrierGridPane.add(inactiveCell(date), i + 2, j + 2);
+                    } else if ((i == nbMois - 1 && jour > sessionSelectionnee.getDateFin().getJour())) {//Jour après la fin
+                        calendrierGridPane.add(inactiveCell(date), i + 2, j + 2);
+                    } else if (mois == 2 && jour > 28 && !(jour == 29 && (moisDebut + i < 12 && sessionSelectionnee.getDateDebut().isBisextile()) || (moisDebut + i > 12 && sessionSelectionnee.getDateFin().isBisextile()))) {//Fevrier
+                        //calendrierGridPane.add(inactiveCell(null), i + 2, j + 2);
                     } else if (j == 30 && (mois == 4 || mois == 6 || mois == 9 || mois == 11)) {//Mois de 30 jours
-                        calendrierGridPane.add(inactiveCell(), i + 2, j + 2);
+                        //calendrierGridPane.add(inactiveCell(null), i + 2, j + 2);
                     } //Empty cell
                     else {
-                        int annee = moisDebut + i < 12 ? sessionSelectionnee.getDateDebut().getAnnee() : sessionSelectionnee.getDateFin().getAnnee();
-                        SeanceCell cell = null;
-                        if (lesSeances != null) {
+                        boolean done = false;
+                        //Week-end
+                        if (date.getDay() == 0 || date.getDay() == 6) {
+                            calendrierGridPane.add(inactiveCell(date), i + 2, j + 2);
+                            done = true;
+                        } //Jour férié
+                        else if (date.isFerie()) {
+                            calendrierGridPane.add(inactiveCell(date), i + 2, j + 2);
+                            done = true;
+                        } else if (lesSeances != null) {
                             for (Map.Entry<Integer, Seance> entry : lesSeances.entrySet()) {
                                 Seance seance = entry.getValue();
 
                                 Date dateSeance = seance.getDate();
                                 if (dateSeance.getAnnee() == annee && dateSeance.getMois() == mois && dateSeance.getJour() == j + 1) {
-                                    cell = seanceCell(seance);
+                                    calendrierGridPane.add(seanceCell(seance), i + 2, j + 2);
+                                    done = true;
                                     break;
                                 }
-
                             }
                         }
-                        if (cell == null) {
-                            cell = emptyCell(new Date(annee, mois, j + 1));
+                        if (!done) {
+                            calendrierGridPane.add(emptyCell(date), i + 2, j + 2);
                         }
-                        calendrierGridPane.add(cell, i + 2, j + 2);
                     }
                 }
             }
         }
     }
 
-    private Label inactiveCell() {
-        Label cell = new Label();
+    private HBox inactiveCell(Date date) {
+        HBox cell = new HBox();
+        Label labelNumero = new Label(String.valueOf(date.getJour()));
+        Label labelJour = new Label(Date.JOUR[date.getDay() + 1].charAt(0) + "");
+        Label labelSeance = new Label();
+        labelNumero.setMinWidth(15);
+        labelJour.setMinWidth(15);
+        labelSeance.setMinWidth(40);
+        labelNumero.getStyleClass().add("jour-cell");
+        labelJour.getStyleClass().add("jour-cell");
+        cell.getChildren().addAll(labelNumero, labelJour, labelSeance);
         cell.getStyleClass().addAll("calendrier-cell", "inactive-cell");
-        cell.setPrefWidth(80.0);
-        cell.setPrefHeight(20.0);
         return cell;
     }
 
-    private SeanceCell emptyCell(final Date date) {
-        SeanceCell cell = new SeanceCell(date);
-        cell.setPrefWidth(80.0);
-        cell.setPrefHeight(20.0);
-        cell.getStyleClass().add("calendrier-cell");
+    private CalendarCell emptyCell(final Date date) {
+        CalendarCell cell = new CalendarCell(date);
         cell.setOnMouseClicked(new EventHandler<MouseEvent>() {
             //Selectionne la Session à planifier
             @Override
@@ -146,12 +152,8 @@ public class CalendrierAnnuelController {
         return cell;
     }
 
-    private SeanceCell seanceCell(final Seance seance) {
-        SeanceCell cell = new SeanceCell(seance);
-        cell.setText(seance.toStringShort());
-        cell.setPrefWidth(80.0);
-        cell.setPrefHeight(20.0);
-        cell.getStyleClass().add("calendrier-cell");
+    private CalendarCell seanceCell(final Seance seance) {
+        CalendarCell cell = new CalendarCell(seance);
         cell.setOnMouseClicked(new EventHandler<MouseEvent>() {
             //Affichage detaillé du module
             @Override
