@@ -13,6 +13,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -66,7 +68,7 @@ public class LoginController {
             actiontarget.setText(ae.getMessage());
         }
         catch (Exception e) {
-            actiontarget.setText(e.getMessage());
+            Logger.getLogger(PlanningController.class.getName()).log(Level.SEVERE, null, e);
         }
         if (saveEmail.isSelected()) {
             saveEmailInFile();

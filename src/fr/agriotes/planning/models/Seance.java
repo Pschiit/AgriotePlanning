@@ -104,7 +104,10 @@ public class Seance {
 
     @Override
     public String toString() {
-        return module + "\n" + formateur + "\n" + date;
+        return module + "\n" + formateur+ "\n" + session;
     }
 
+    public String toStringShort(){
+        return formateur.getPrenom().charAt(0)+ "" + formateur.getNom().charAt(0);
+    }
 }

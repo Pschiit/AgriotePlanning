@@ -22,16 +22,14 @@ public class SeanceDao implements SeanceDaoServices {
     @Override
     public List<SeanceRaw> getSeancesByIdSession(int idSession) throws SQLException {
         List<SeanceRaw> result = null;
-        String sql = "SELECT * FROM seances WHERE id_session = ?";
+        String sql = "SELECT * FROM seance WHERE id_session = ?";
         Connection connection = Database.getConnection();
         PreparedStatement order = connection.prepareStatement(sql);
         order.setInt(1, idSession);
         ResultSet rs = order.executeQuery();
-        if (rs.next()) {
-            result = new ArrayList<>();
-            result.add(new SeanceRaw(rs.getInt("id_seance"), rs.getInt("id_session"), rs.getInt("id_module"), rs.getInt("id_formateur"), Date.FromSQLDate(rs.getDate("jour"))));
-        }
         while (rs.next()) {
+            if(result == null)
+                result = new ArrayList<>();
             result.add(new SeanceRaw(rs.getInt("id_seance"), rs.getInt("id_session"), rs.getInt("id_module"), rs.getInt("id_formateur"), Date.FromSQLDate(rs.getDate("jour"))));
         }
         order.close();

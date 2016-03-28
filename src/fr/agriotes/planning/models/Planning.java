@@ -1,6 +1,7 @@
 package fr.agriotes.planning.models;
 
 import fr.agriotes.planning.services.PlanningServices;
+import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,11 +17,6 @@ public class Planning implements PlanningServices {
     public Planning(Map<Integer, Seance> lesSeances, Catalogue catalogue) {
         this.lesSeances = lesSeances;
         this.catalogue = catalogue;
-    }
-
-    public Planning(List<SeanceRaw> lesSeancesSQL, Catalogue catalogue) {
-        this.catalogue = catalogue;
-        setLesSeances(lesSeancesSQL);
     }
 
     public Catalogue getCatalogue() {
@@ -39,14 +35,19 @@ public class Planning implements PlanningServices {
         this.lesSeances = lesSeances;
     }
 
-    public void setLesSeances(List<SeanceRaw> lesSeancesSQL) {
-        assert catalogue != null : "Catalogue manquant";
-        Map<Integer, Seance> lesSeances = new HashMap<>();
-        for (SeanceRaw laSeanceSQL : lesSeancesSQL) {
-            Seance seance = convertSeanceRawtoSeance(laSeanceSQL);
-            lesSeances.put(seance.getId(), seance);
+    public void setLesSeances(List<SeanceRaw> lesSeancesRaw) {
+        if (lesSeancesRaw == null) {
+            this.lesSeances = new HashMap<>();
+        } else {
+            assert catalogue != null : "Catalogue manquant";
+            Map<Integer, Seance> lesSeances = new HashMap<>();
+
+            for (SeanceRaw laSeanceSQL : lesSeancesRaw) {
+                Seance seance = convertSeanceRawtoSeance(laSeanceSQL);
+                lesSeances.put(seance.getId(), seance);
+            }
+            this.lesSeances = lesSeances;
         }
-        this.lesSeances = lesSeances;
     }
 
     @Override
@@ -70,8 +71,8 @@ public class Planning implements PlanningServices {
     }
 
     @Override
-    public Seance convertSeanceRawtoSeance(SeanceRaw seance) {
+    public Seance convertSeanceRawtoSeance(SeanceRaw seanceRaw) {
         assert catalogue != null : "Catalogue manquant";
-        return new Seance(seance.getId(), catalogue.getSession(seance.getIdSession()), catalogue.getModule(seance.getIdModule()), catalogue.getFormateur(seance.getIdFormateur()), seance.getDate());
+        return new Seance(seanceRaw.getId(), catalogue.getSession(seanceRaw.getIdSession()), catalogue.getModule(seanceRaw.getIdModule()), catalogue.getFormateur(seanceRaw.getIdFormateur()), seanceRaw.getDate());
     }
 }

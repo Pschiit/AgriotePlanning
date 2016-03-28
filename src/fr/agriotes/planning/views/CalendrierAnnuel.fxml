@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<AnchorPane fx:id="calendrierAnnuelPane" id="calendrier-annuel-pane" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.agriotes.planning.controllers.CalendrierAnnuelController">
+    <children>
+        <Label fx:id="sessionTitle" alignment="CENTER" text="Empty"  id="sessionTitle" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" />
+        <GridPane fx:id="calendrierGridPane" id="calendrier-grid-pane" alignment="CENTER" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0"  >
+            <padding>
+                <Insets bottom="25" left="25" right="25" top="25" />
+            </padding>
+        </GridPane>
+    </children>
+    <stylesheets>
+        <URL value="@/fr/agriotes/planning/content/css/calendrierannuel.css"/>
+    </stylesheets>
+</AnchorPane>

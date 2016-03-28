@@ -5,11 +5,11 @@ public class Date extends java.sql.Date {
     private int mois;
     private int jour;
     
-    public Date(int i, int i1, int i2) {
-        super(i-1900, i1 -1, i2);
-        annee = i;
-        mois = i1;
-        jour = i2;
+    public Date(int annee, int mois, int jour) {
+        super(annee-1900, mois -1, jour);
+        this.annee = annee;
+        this.mois = mois;
+        this.jour = jour;
     }
     
     public static Date FromSQLDate(java.sql.Date date){
@@ -79,5 +79,9 @@ public class Date extends java.sql.Date {
             return false;
         }
         return true;
+    }
+    
+    public boolean isBisextile(){
+        return ( annee % 400 == 0) || ((annee % 4 == 0) && (annee % 100 != 0));
     }
 }

@@ -1,12 +1,9 @@
 package fr.agriotes.planning.controllers;
 
-import fr.agriotes.planning.dao.CatalogueDao;
 import fr.agriotes.planning.models.Catalogue;
 import fr.agriotes.planning.models.Module;
 import fr.agriotes.planning.models.Session;
 import fr.agriotes.planning.models.ModuleCell;
-import fr.agriotes.planning.services.CatalogueDaoServices;
-import java.sql.SQLException;
 import java.util.Map;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -23,66 +20,59 @@ import javafx.util.Callback;
 
 public class CatalogueController {
 
-    private final CatalogueDaoServices catalogueDao = new CatalogueDao();
     private Catalogue catalogue;
-    private Session sessionSelectionnee;
-    private Module moduleSelectionne;
+    private PlanningController planningController;
 
-    public Session getSessionSelectionnee() {
-        return sessionSelectionnee;
+    public Catalogue getCatalogue() {
+        return catalogue;
     }
 
-    public void setSessionSelectionnee(Session sessionSelectionnee) {
-        this.sessionSelectionnee = sessionSelectionnee;
-        System.out.println("Formation selectionnée : " + sessionSelectionnee);
+    public void setCatalogue(Catalogue catalogue) {
+        this.catalogue = catalogue;
+        initialize();
     }
 
-    public Module getModuleSelectionne() {
-        return moduleSelectionne;
+    public PlanningController getPlanningController() {
+        return planningController;
     }
 
-    public void setModuleSelectionne(Module moduleSelectionne) {
-        this.moduleSelectionne = moduleSelectionne;
-        System.out.println("Module selectionné : " + moduleSelectionne);
+    public void setPlanningController(PlanningController planningController) {
+        this.planningController = planningController;
     }
 
     @FXML
     private Accordion accordion;
 
     @FXML
-    public Accordion getAccordion() {
-        return accordion;
+    public void initialize() {
+        if (planningController != null) {
+            paint();
+        }
     }
 
-    @FXML
-    public void initialize() {
-        System.out.println("catalogue loading");
-        try {
-            catalogue = catalogueDao.getCatalogue();
-        } catch (SQLException ex) {
-            System.err.println(ex.getMessage());
-        }
+    private void paint() {
         assert catalogue != null : "Catalogue null";
+        System.out.println("catalogue loading");
+        TitledPane titlePaneSelectionnee = accordion.getExpandedPane();
         accordion.getPanes().clear();
-        boolean noSelection = sessionSelectionnee == null;
         for (Map.Entry<Integer, Session> entry : catalogue.getLesSessions().entrySet()) {
             final int key = entry.getKey();
-            Session laSession = entry.getValue();
+            final Session laSession = entry.getValue();
 
-            //creation du TitledPane de la session + affichage si selectionné
-            TitledPane titledPane = new TitledPane();
+            //creation du TitledPane de la session
+            final TitledPane titledPane = new TitledPane();
             titledPane.setText(laSession.toString());
             titledPane.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                //Selectionne la Session à planifier
                 @Override
                 public void handle(MouseEvent event) {
-                    setSessionSelectionnee(catalogue.getSession(key));
+                    planningController.setSessionSelectionnee(laSession);
                 }
             });
-            if (noSelection) {
-                accordion.setExpandedPane(titledPane);
-                noSelection = false;
-            } else if (laSession.equals(sessionSelectionnee)) {
-                accordion.setExpandedPane(titledPane);
+            //Si pas de selection selectionne le premier
+            if (titlePaneSelectionnee == null) {
+                titlePaneSelectionnee = titledPane;
+                planningController.setSessionSelectionnee(laSession);
             }
 
             //creation de la ListView de moduleCell
@@ -92,9 +82,10 @@ public class CatalogueController {
             }
             ListView<Module> modulesDeLaSession = new ListView<>(modulesObservables);
             modulesDeLaSession.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Module>() {
+                //Selectionne le module à planifier
                 @Override
                 public void changed(ObservableValue<? extends Module> observable, Module oldValue, Module newValue) {
-                    setModuleSelectionne(newValue);
+                    CatalogueController.this.planningController.setModuleSelectionne(newValue);
                 }
             });
             modulesDeLaSession.setCellFactory(new Callback<ListView<Module>, ListCell<Module>>() {
@@ -105,8 +96,10 @@ public class CatalogueController {
             });
 
             titledPane.setContent(modulesDeLaSession);
-
             accordion.getPanes().add(titledPane);
+            if (titledPane.getText().equals(titlePaneSelectionnee.getText())) {
+                accordion.setExpandedPane(titledPane);
+            }
         }
     }
 }

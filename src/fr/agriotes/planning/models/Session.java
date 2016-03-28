@@ -19,7 +19,7 @@ public class Session {
         this.intituleFormation = intituleFormation;
         this.dateDebut = dateDebut;
         this.dateFin = dateFin;
-        setLesModules(lesModules);
+        this.lesModules = lesModules;
     }
 
     public int getId() {
@@ -59,9 +59,7 @@ public class Session {
     }
 
     public void setLesModules(List<Module> lesModules) {
-        if (lesModules != null) {
-            this.lesModules = lesModules;
-        }
+        this.lesModules = lesModules;
     }
 
     @Override
@@ -111,5 +109,9 @@ public class Session {
             return false;
         }
         return true;
+    }
+
+    public int getNombreDeMois() {
+        return (dateFin.getAnnee() - dateDebut.getAnnee()) * 12 + dateFin.getMois() - dateDebut.getMois() + 1;
     }
 }

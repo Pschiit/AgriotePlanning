@@ -4,7 +4,9 @@ import fr.agriotes.planning.models.Catalogue;
 import fr.agriotes.planning.services.CatalogueDaoServices;
 import org.junit.Test;
 import static org.junit.Assert.*;
-public class CatalogueDaoTest extends DaoTest{
+
+public class CatalogueDaoTest extends DaoTest {
+
     @Test
     public void testGetCatalogue() throws Exception {
         System.out.println("getCatalogue");

@@ -28,6 +28,6 @@
    </children>
     
     <stylesheets>
-        <URL value="@/fr/agriotes/planning/content/css/Login.css" />
+        <URL value="@/fr/agriotes/planning/content/css/login.css" />
     </stylesheets>
 </GridPane>

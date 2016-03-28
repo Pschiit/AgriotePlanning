@@ -1,0 +1,7 @@
+.calendrier-cell{
+    -fx-alignment: center; -fx-border-color: black;
+}
+
+.inactive-cell{
+    -fx-background-color: grey;
+}

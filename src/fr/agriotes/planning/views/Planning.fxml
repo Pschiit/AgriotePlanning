@@ -9,18 +9,44 @@
 <?import javafx.scene.image.*?>
 
 
-<AnchorPane id="root" fx:id="root" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.agriotes.planning.controllers.PlanningController">
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" id="root" fx:id="root" xmlns="http://javafx.com/javafx/8.0.65" fx:controller="fr.agriotes.planning.controllers.PlanningController">
     <children>
-        <BorderPane id="boder-pane" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+        <BorderPane id="border-pane" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
             <top>
                 <ToolBar id="tool-bar" prefHeight="40.0"  BorderPane.alignment="CENTER">
                     <items>
-                        <Button fx:id="signOutButton" id="sign-out-button" onAction="#handleSignOutAction" text="Déconnexion" />
-                        <Button onAction="#handleRefreshCatalogueAction" styleClass="refresh-button">
+                        <Button id="previous-button" styleClass="toolbar-button">
                             <graphic>
-                                <ImageView fitWidth="25.0" pickOnBounds="true" preserveRatio="true" styleClass="refresh-img">
+                                <ImageView fitWidth="25.0" fitHeight="25.0"  >
                                     <image>
-                                        <Image url="@/fr/agriotes/planning/content/img/refresh.png" />
+                                        <Image url="@/fr/agriotes/planning/content/img/Previous-s.png" />
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                        <Button id="next-button" styleClass="toolbar-button">
+                            <graphic>
+                                <ImageView fitWidth="25.0" fitHeight="25.0" >
+                                    <image>
+                                        <Image url="@/fr/agriotes/planning/content/img/Next-s.png" />
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                        <Button id="refresh-button" onAction="#handleRefreshAction" styleClass="toolbar-button">
+                            <graphic>
+                                <ImageView fitWidth="25.0" fitHeight="25.0" >
+                                    <image>
+                                        <Image url="@/fr/agriotes/planning/content/img/Synchronize-s.png" />
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                        <Button id="sign-out-button" onAction="#handleSignOutAction" fx:id="signOutButton" styleClass="toolbar-button">
+                            <graphic>
+                                <ImageView fitWidth="25.0" fitHeight="25.0" >
+                                    <image>
+                                        <Image url="@/fr/agriotes/planning/content/img/Disconnect-s.png" />
                                     </image>
                                 </ImageView>
                             </graphic>
@@ -28,9 +54,9 @@
                     </items>
                 </ToolBar>
             </top>
-            <left>
-                
-            </left>
+            <center>
+                <fx:include source="/fr/agriotes/planning/views/CalendrierAnnuel.fxml" fx:id="calendrierAnnuelPane"/>
+            </center>
             <right>
                 <fx:include source="/fr/agriotes/planning/views/Catalogue.fxml" fx:id="cataloguePane" />
             </right>
@@ -38,6 +64,6 @@
     </children>
    
     <stylesheets>
-        <URL value="@/fr/agriotes/planning/content/css/Planning.css" />
+        <URL value="@/fr/agriotes/planning/content/css/planning.css" />
     </stylesheets>
 </AnchorPane>

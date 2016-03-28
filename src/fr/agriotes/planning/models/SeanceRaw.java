@@ -102,4 +102,9 @@ public class SeanceRaw {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "SeanceRaw{" + "id=" + id + ", idModule=" + idModule + ", idSession=" + idSession + ", idFormateur=" + idFormateur + ", date=" + date + '}';
+    }
+
 }
