@@ -1,6 +1,5 @@
 package fr.agriotes.planning.controllers;
 
-import fr.agriotes.planning.services.CatalogueService;
 import fr.agriotes.planning.models.Catalogue;
 import fr.agriotes.planning.models.Module;
 import fr.agriotes.planning.models.Session;
@@ -18,11 +17,12 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TitledPane;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Callback;
+import fr.agriotes.planning.services.CatalogueServices;
 
 public class CatalogueController {
 
     private Catalogue catalogue;
-    private CatalogueService catalogueService;
+    private CatalogueServices catalogueServices;
 
     public Catalogue getCatalogue() {
         return catalogue;
@@ -33,12 +33,12 @@ public class CatalogueController {
         initialize();
     }
 
-    public CatalogueService getCatalogueService() {
-        return catalogueService;
+    public CatalogueServices getCatalogueService() {
+        return catalogueServices;
     }
 
-    public void setCatalogueService(CatalogueService catalogueService) {
-        this.catalogueService = catalogueService;
+    public void setCatalogueService(CatalogueServices catalogueService) {
+        this.catalogueServices = catalogueService;
     }
 
     @FXML
@@ -46,7 +46,7 @@ public class CatalogueController {
 
     @FXML
     public void initialize() {
-        if (catalogueService != null) {
+        if (catalogueServices != null) {
             paint();
         }
     }
@@ -67,13 +67,13 @@ public class CatalogueController {
                 //Selectionne la Session à planifier
                 @Override
                 public void handle(MouseEvent event) {
-                    catalogueService.setSessionSelectionnee(laSession);
+                    catalogueServices.setSessionSelectionnee(laSession);
                 }
             });
             //Si pas de selection selectionne le premier
             if (titlePaneSelectionnee == null) {
                 titlePaneSelectionnee = titledPane;
-                catalogueService.setSessionSelectionnee(laSession);
+                catalogueServices.setSessionSelectionnee(laSession);
             }
 
             //creation de la ListView de moduleCell
@@ -82,17 +82,19 @@ public class CatalogueController {
                 modulesObservables.add(unModule);
             }
             ListView<Module> modulesDeLaSession = new ListView<>(modulesObservables);
-            modulesDeLaSession.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Module>() {
+            /*modulesDeLaSession.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Module>() {
                 //Selectionne le module à planifier
                 @Override
                 public void changed(ObservableValue<? extends Module> observable, Module oldValue, Module newValue) {
-                    CatalogueController.this.catalogueService.setModuleSelectionne(newValue);
+                    catalogueServices.setModuleSelectionne(newValue);
                 }
-            });
+            });*/
             modulesDeLaSession.setCellFactory(new Callback<ListView<Module>, ListCell<Module>>() {
                 @Override
                 public ListCell<Module> call(ListView<Module> param) {
-                    return new ModuleCell();
+                    ModuleCell cell = new ModuleCell();
+                    cell.setEvent(catalogueServices);
+                    return cell;
                 }
             });
             titledPane.setContent(modulesDeLaSession);

@@ -4,8 +4,8 @@ import fr.agriotes.planning.models.Date;
 import fr.agriotes.planning.models.Module;
 import fr.agriotes.planning.models.Seance;
 import fr.agriotes.planning.models.CalendarCell;
+import fr.agriotes.planning.models.Formateur;
 import fr.agriotes.planning.models.Session;
-import fr.agriotes.planning.services.CalendrierService;
 import fr.agriotes.planning.services.PlanningServices;
 import java.util.Map;
 import javafx.event.EventHandler;
@@ -14,19 +14,21 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import fr.agriotes.planning.services.CalendrierServices;
 
 public class CalendrierAnnuelController {
 
-    private CalendrierService calendrierService;
+    private CalendrierServices calendrierService;
     private Map<Integer, Seance> lesSeances;
     private Session sessionSelectionnee;
     private Module moduleSelectionne;
+    private Formateur formateurSelectionne;
 
-    public CalendrierService getCalendrierService() {
+    public CalendrierServices getCalendrierService() {
         return calendrierService;
     }
 
-    public void setCalendrierService(CalendrierService calendrierService) {
+    public void setCalendrierService(CalendrierServices calendrierService) {
         this.calendrierService = calendrierService;
     }
 
@@ -43,8 +45,10 @@ public class CalendrierAnnuelController {
     }
 
     public void setSessionSelectionnee(Session sessionSelectionnee) {
+        System.out.println(sessionSelectionnee);
         this.sessionSelectionnee = sessionSelectionnee;
         setModuleSelectionne(null);
+        setFormateurSelectionne(null);
         initialize();
     }
 
@@ -53,7 +57,17 @@ public class CalendrierAnnuelController {
     }
 
     public void setModuleSelectionne(Module moduleSelectionne) {
+        System.out.println(moduleSelectionne);
         this.moduleSelectionne = moduleSelectionne;
+    }
+
+    public Formateur getFormateurSelectionne() {
+        return formateurSelectionne;
+    }
+
+    public void setFormateurSelectionne(Formateur formateurSelectionne) {
+        System.out.println(formateurSelectionne);
+        this.formateurSelectionne = formateurSelectionne;
     }
 
     @FXML
@@ -149,7 +163,7 @@ public class CalendrierAnnuelController {
             @Override
             public void handle(MouseEvent event) {
                 if(cell.getSeance() == null){
-                    Seance seance = calendrierService.addSeance(new Seance(0,sessionSelectionnee, moduleSelectionne, moduleSelectionne.getFormateurs().get(0), date));
+                    Seance seance = calendrierService.addSeance(new Seance(0,sessionSelectionnee, moduleSelectionne, formateurSelectionne, date));
                     lesSeances.put(seance.getId(),seance);
                     cell.setSeance(seance);
                 }

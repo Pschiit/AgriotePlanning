@@ -1,13 +1,14 @@
 package fr.agriotes.planning.controllers;
 
-import fr.agriotes.planning.services.CalendrierService;
-import fr.agriotes.planning.services.CatalogueService;
 import fr.agriotes.planning.dao.CatalogueDao;
 import fr.agriotes.planning.dao.SeanceDao;
+import fr.agriotes.planning.models.Formateur;
 import fr.agriotes.planning.models.Module;
 import fr.agriotes.planning.models.Planning;
 import fr.agriotes.planning.models.Seance;
 import fr.agriotes.planning.models.Session;
+import fr.agriotes.planning.services.CatalogueDaoServices;
+import fr.agriotes.planning.services.SeanceDaoServices;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -20,8 +21,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import fr.agriotes.planning.services.CatalogueServices;
+import fr.agriotes.planning.services.CalendrierServices;
 
-public class PlanningController implements CatalogueService, CalendrierService{
+public class PlanningController implements CatalogueServices, CalendrierServices{
 
     private Planning planning = new Planning();
 
@@ -59,7 +62,7 @@ public class PlanningController implements CatalogueService, CalendrierService{
 
     public void LoadCatalogue() {
         assert cataloguePaneController != null : "catalogueController null";
-        CatalogueDao catalogueDao = new CatalogueDao();
+        CatalogueDaoServices catalogueDao = new CatalogueDao();
         try {
             planning.setCatalogue(catalogueDao.getCatalogue());
             cataloguePaneController.setCatalogue(planning.getCatalogue());
@@ -70,7 +73,7 @@ public class PlanningController implements CatalogueService, CalendrierService{
 
     public void loadCalendrierAnnuel(Session sessionSelectionnee) {
         assert calendrierAnnuelPaneController != null : "calendrierAnnuelPaneController null";
-        SeanceDao seanceDao = new SeanceDao();
+        SeanceDaoServices seanceDao = new SeanceDao();
         try {
             planning.setLesSeances(seanceDao.getSeancesByIdSession(sessionSelectionnee.getId()));
             calendrierAnnuelPaneController.setLesSeances(planning.getLesSeances());
@@ -89,6 +92,11 @@ public class PlanningController implements CatalogueService, CalendrierService{
     public void setModuleSelectionne(Module moduleSelectionne) {
         calendrierAnnuelPaneController.setModuleSelectionne(moduleSelectionne);
     }
+    
+    @Override
+    public void setFormateurSelectionne(Formateur formateurSelectionne){
+        calendrierAnnuelPaneController.setFormateurSelectionne(formateurSelectionne);
+    }
 
     private void goToLogin() throws IOException {
         Stage stage = (Stage) signOutButton.getScene().getWindow();
@@ -99,7 +107,7 @@ public class PlanningController implements CatalogueService, CalendrierService{
 
     @Override
     public Seance addSeance(Seance seance) {
-        SeanceDao seanceDao = new SeanceDao();
+        SeanceDaoServices seanceDao = new SeanceDao();
         try {
             Seance result = seanceDao.addSeance(seance);
             planning.addSeance(result);

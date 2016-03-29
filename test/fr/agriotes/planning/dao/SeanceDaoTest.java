@@ -20,7 +20,7 @@ public class SeanceDaoTest  extends DaoTest {
         SeanceDao instance = new SeanceDao();
         List<SeanceRaw> expResult = new ArrayList<>();
         expResult.add(new SeanceRaw(1, 4, 9, 14, new Date(2016, 11, 25)));
-        expResult.add(new SeanceRaw(2, 4, 9, 15, new Date(2016, 11, 26)));
+        expResult.add(new SeanceRaw(2, 4, 9, 15, new Date(2016, 11, 28)));
         for (SeanceRaw seanceRaw : expResult) {
             System.out.println(seanceRaw);
         }
