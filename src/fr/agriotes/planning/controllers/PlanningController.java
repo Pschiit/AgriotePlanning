@@ -187,7 +187,7 @@ public class PlanningController implements CatalogueControllerServices, Calendri
         try {
             result = seanceDao.updateSeance(seance);
             planning.editSeance(seance);
-            calendrierAnnuelPaneController.initialize();
+            calendrierAnnuelPaneController.editCell(seance);
         } catch (SQLException ex) {
             log.append(ex.getMessage());
             fenetreErreur("La seance n'a pu été modifiée", log.toString());
@@ -203,8 +203,7 @@ public class PlanningController implements CatalogueControllerServices, Calendri
             result = seanceDao.removeSeance(seance);
             planning.removeSeance(seance);
             detailModuleController.removeSeances(result);
-            //detailModuleController.setSeances(planning.getSeanceByModuleSession(seance.getModule(), seance.getSession()));
-            calendrierAnnuelPaneController.initialize();
+            calendrierAnnuelPaneController.removeCell(seance.getDate());
         } catch (SQLException ex) {
             log.append(ex.getMessage());
             fenetreErreur("La seance n'a pu été supprimée", log.toString());

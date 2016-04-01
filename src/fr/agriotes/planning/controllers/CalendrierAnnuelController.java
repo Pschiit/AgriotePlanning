@@ -6,7 +6,6 @@ import fr.agriotes.planning.models.Seance;
 import fr.agriotes.planning.models.CalendarCell;
 import fr.agriotes.planning.models.Formateur;
 import fr.agriotes.planning.models.Session;
-import java.util.Map;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -15,6 +14,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import java.util.List;
 import fr.agriotes.planning.services.CalendrierControllerServices;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CalendrierAnnuelController {
 
@@ -23,6 +24,7 @@ public class CalendrierAnnuelController {
     private Session sessionSelectionnee;
     private Module moduleSelectionne;
     private Formateur formateurSelectionne;
+    private Map<Date, CalendarCell> lesCalendarCells = new HashMap<>();
 
     public CalendrierControllerServices getCalendrierControllerService() {
         return calendrierControllerServices;
@@ -68,6 +70,14 @@ public class CalendrierAnnuelController {
     public void setFormateurSelectionne(Formateur formateurSelectionne) {
         System.out.println(formateurSelectionne);
         this.formateurSelectionne = formateurSelectionne;
+    }
+
+    public Map<Date, CalendarCell> getLesCalendarCells() {
+        return lesCalendarCells;
+    }
+
+    public void setLesCalendarCells(Map<Date, CalendarCell> lesCalendarCells) {
+        this.lesCalendarCells = lesCalendarCells;
     }
 
     @FXML
@@ -157,6 +167,7 @@ public class CalendrierAnnuelController {
 
     private CalendarCell emptyCell(final Date date) {
         final CalendarCell cell = new CalendarCell(date);
+        lesCalendarCells.put(date, cell);
         cell.setOnMouseClicked(new EventHandler<MouseEvent>() {
             //Selectionne la Session à planifier
             @Override
@@ -175,7 +186,31 @@ public class CalendrierAnnuelController {
 
     private CalendarCell seanceCell(final Seance seance) {
         CalendarCell cell = new CalendarCell(seance);
+        lesCalendarCells.put(seance.getDate(), cell);
         cell.setEvent(calendrierControllerServices);
         return cell;
+    }
+
+    public void editCell(Seance seance) {
+        CalendarCell cell = lesCalendarCells.get(seance.getDate());
+        cell.setSeance(seance);
+    }
+
+    public void removeCell(Date date) {
+        final CalendarCell cell = lesCalendarCells.get(date);
+        cell.setSeance(null);
+        cell.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            //Reautorise la plannification pour cette cell
+            @Override
+            public void handle(MouseEvent event) {
+                if (cell.getSeance() == null) {
+                    Seance nouvelleSeance = calendrierControllerServices.addSeance(new Seance(0, sessionSelectionnee, moduleSelectionne, formateurSelectionne, cell.getDate()));
+                    if (nouvelleSeance != null) {
+                        cell.setSeance(nouvelleSeance);
+                        cell.setEvent(calendrierControllerServices);
+                    }
+                }
+            }
+        });
     }
 }

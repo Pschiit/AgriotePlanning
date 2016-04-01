@@ -19,10 +19,16 @@ public class CalendarCell extends HBox {
     }
 
     public void setSeance(Seance seance) {
-        this.seance = seance;
-        labelSeance.setText(seance.toStringShort());
-        Color[] colors = Color.values();
-        this.setStyle("-fx-background-color:" + colors[seance.getModule().getId() % colors.length]);
+        if (seance != null) {
+            this.seance = seance;
+            labelSeance.setText(seance.toStringShort());
+            Color[] colors = Color.values();
+            this.setStyle("-fx-background-color:" + colors[seance.getModule().getId() % colors.length]);
+        }else{
+            this.seance = null;
+            labelSeance.setText("");
+            this.setStyle(null);
+        }
     }
 
     public Date getDate() {
@@ -84,14 +90,14 @@ public class CalendarCell extends HBox {
         setDate(seance.getDate());
         setSeance(seance);
     }
-    
-    public void setEvent(final CalendrierControllerServices calendrierControllerServices){
+
+    public void setEvent(final CalendrierControllerServices calendrierControllerServices) {
         this.setOnMouseClicked(new EventHandler<MouseEvent>() {
             //Selectionne la Session à planifier
             @Override
             public void handle(MouseEvent event) {
                 if (seance != null) {
-                    calendrierControllerServices.fenetreModule(seance.getModule(),seance.getSession());
+                    calendrierControllerServices.fenetreModule(seance.getModule(), seance.getSession());
                 }
             }
         });
