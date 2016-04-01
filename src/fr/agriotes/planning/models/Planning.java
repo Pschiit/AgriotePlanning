@@ -1,19 +1,17 @@
 package fr.agriotes.planning.models;
 
-import fr.agriotes.planning.services.PlanningServices;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-public class Planning implements PlanningServices {
+public class Planning {
 
-    private Map<Integer, Seance> lesSeances;
+    private List<Seance> lesSeances;
     private Catalogue catalogue;
 
     public Planning() {
     }
 
-    public Planning(Map<Integer, Seance> lesSeances, Catalogue catalogue) {
+    public Planning(List<Seance> lesSeances, Catalogue catalogue) {
         this.lesSeances = lesSeances;
         this.catalogue = catalogue;
     }
@@ -26,50 +24,69 @@ public class Planning implements PlanningServices {
         this.catalogue = catalogue;
     }
 
-    public Map<Integer, Seance> getLesSeances() {
+    public List<Seance> getLesSeances() {
         return lesSeances;
     }
 
-    public void setLesSeances(Map<Integer, Seance> lesSeances) {
+    public void setLesSeances(List<Seance> lesSeances) {
         this.lesSeances = lesSeances;
     }
 
-    public void setLesSeances(List<SeanceRaw> lesSeancesRaw) {
+    public void setLesSeancesFromRaw(List<SeanceRaw> lesSeancesRaw) {
         if (lesSeancesRaw == null) {
-            this.lesSeances = new HashMap<>();
+            this.lesSeances = new ArrayList<>();
         } else {
             assert catalogue != null : "Catalogue manquant";
-            Map<Integer, Seance> lesSeances = new HashMap<>();
+            List<Seance> lesSeances = new ArrayList();
 
             for (SeanceRaw laSeanceSQL : lesSeancesRaw) {
                 Seance seance = convertSeanceRawtoSeance(laSeanceSQL);
-                lesSeances.put(seance.getId(), seance);
+                lesSeances.add(seance);
             }
             this.lesSeances = lesSeances;
         }
     }
 
-    @Override
-    public Seance addSeance(Seance seance) {
-        return lesSeances.put(seance.getId(), seance);
+    public boolean addSeance(Seance seance) {
+        return lesSeances.add(seance);
     }
 
-    @Override
     public Seance getSeance(int id) {
-        return lesSeances.get(id);
+        for (Seance uneSeance : lesSeances) {
+            if (uneSeance.getId() == id) {
+                return uneSeance;
+            }
+        }
+        return null;
     }
 
-    @Override
-    public Seance editSeance(int id, Seance nouvelleSeance) {
-        return lesSeances.replace(id, nouvelleSeance);
+    public List<Seance> getSeanceByModuleSession(Module module, Session session) {
+        List<Seance> result = new ArrayList();;
+        for (Seance uneSeance : lesSeances) {
+            if (uneSeance.getModule().equals(module) && uneSeance.getSession().equals(session)) {
+                result.add(uneSeance);
+            }
+        }
+        if (result.isEmpty()) {
+            return null;
+        }
+        return result;
     }
 
-    @Override
-    public Seance removeSeance(int id) {
-        return lesSeances.remove(id);
+    public boolean editSeance(Seance seance) {
+        for (Seance uneSeance : lesSeances) {
+            if (uneSeance.getId() == seance.getId()) {
+                uneSeance = seance;
+            }
+            return true;
+        }
+        return false;
     }
 
-    @Override
+    public boolean removeSeance(Seance seance) {
+        return lesSeances.remove(seance);
+    }
+
     public Seance convertSeanceRawtoSeance(SeanceRaw seanceRaw) {
         assert catalogue != null : "Catalogue manquant";
         return new Seance(seanceRaw.getId(), catalogue.getSession(seanceRaw.getIdSession()), catalogue.getModule(seanceRaw.getIdModule()), catalogue.getFormateur(seanceRaw.getIdFormateur()), seanceRaw.getDate());

@@ -14,46 +14,34 @@ import static org.junit.Assert.*;
 public class SeanceDaoTest  extends DaoTest {
     
     @Test
-    public void testGetSeancesByIdSession() throws Exception {
-        System.out.println("getSeancesByIdSession");
-        int idSession = 4;
-        SeanceDao instance = new SeanceDao();
-        List<SeanceRaw> expResult = new ArrayList<>();
-        expResult.add(new SeanceRaw(1, 4, 9, 14, new Date(2016, 11, 25)));
-        expResult.add(new SeanceRaw(2, 4, 9, 15, new Date(2016, 11, 28)));
-        for (SeanceRaw seanceRaw : expResult) {
-            System.out.println(seanceRaw);
-        }
-        List<SeanceRaw> result = instance.getSeancesByIdSession(idSession);
-        for (SeanceRaw seanceRaw : result) {
-            System.out.println(seanceRaw);
-        }
-        assertEquals(expResult, result);
-    }
-    
-    @Test
-    public void testGetSeancesByIdSessionFailed() throws Exception {
-        System.out.println("getSeancesByIdSessionFailed");
-        int idSession = 1;
-        SeanceDao instance = new SeanceDao();
-        List<SeanceRaw> expResult = null;
-        List<SeanceRaw> result = instance.getSeancesByIdSession(idSession);
-        assertEquals(expResult, result);
-    }
-    
-    @Test
-    public void testAddSeance()throws Exception{
-        System.out.println("addSeance");
+    public void testUpdateSeance()throws Exception{
+        System.out.println("updateSeance");
         Session session = new Session();
         session.setId(4);
         Module module = new Module();
         module.setId(9);
         Formateur formateur = new Formateur();
         formateur.setId(15);
-        Date date = new Date(2016, 11, 29);
-        Seance seance = new Seance(0, session, module, formateur, date);
+        Date date = new Date(2016, 10, 30);
+        Seance seance = new Seance(1, session, module, formateur, date);
         SeanceDao instance = new SeanceDao();
-        Seance result = instance.addSeance(seance);
-        assertEquals(6, result.getId());
+        Seance result = instance.updateSeance(seance);
+        assertEquals(seance, result);
+    }
+    
+    @Test
+    public void testDeleteSeance()throws Exception{
+        System.out.println("deleteSeance");
+        Session session = new Session();
+        session.setId(4);
+        Module module = new Module();
+        module.setId(9);
+        Formateur formateur = new Formateur();
+        formateur.setId(15);
+        Date date = new Date(2016, 11, 28);
+        Seance seance = new Seance(2, session, module, formateur, date);
+        SeanceDao instance = new SeanceDao();
+        Seance result = instance.removeSeance(seance);
+        assertEquals(seance, result);
     }
 }

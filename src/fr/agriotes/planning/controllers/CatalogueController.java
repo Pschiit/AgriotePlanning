@@ -5,8 +5,6 @@ import fr.agriotes.planning.models.Module;
 import fr.agriotes.planning.models.Session;
 import fr.agriotes.planning.models.ModuleCell;
 import java.util.Map;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -17,12 +15,12 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TitledPane;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Callback;
-import fr.agriotes.planning.services.CatalogueServices;
+import fr.agriotes.planning.services.CatalogueControllerServices;
 
 public class CatalogueController {
 
     private Catalogue catalogue;
-    private CatalogueServices catalogueServices;
+    private CatalogueControllerServices catalogueControllerServices;
 
     public Catalogue getCatalogue() {
         return catalogue;
@@ -33,12 +31,12 @@ public class CatalogueController {
         initialize();
     }
 
-    public CatalogueServices getCatalogueService() {
-        return catalogueServices;
+    public CatalogueControllerServices getCatalogueControllerService() {
+        return catalogueControllerServices;
     }
 
-    public void setCatalogueService(CatalogueServices catalogueService) {
-        this.catalogueServices = catalogueService;
+    public void setCatalogueControllerService(CatalogueControllerServices catalogueControllerService) {
+        this.catalogueControllerServices = catalogueControllerService;
     }
 
     @FXML
@@ -46,7 +44,7 @@ public class CatalogueController {
 
     @FXML
     public void initialize() {
-        if (catalogueServices != null) {
+        if (catalogueControllerServices != null) {
             paint();
         }
     }
@@ -67,13 +65,13 @@ public class CatalogueController {
                 //Selectionne la Session à planifier
                 @Override
                 public void handle(MouseEvent event) {
-                    catalogueServices.setSessionSelectionnee(laSession);
+                    catalogueControllerServices.setSessionSelectionnee(laSession);
                 }
             });
             //Si pas de selection selectionne le premier
             if (titlePaneSelectionnee == null) {
                 titlePaneSelectionnee = titledPane;
-                catalogueServices.setSessionSelectionnee(laSession);
+                catalogueControllerServices.setSessionSelectionnee(laSession);
             }
 
             //creation de la ListView de moduleCell
@@ -82,18 +80,11 @@ public class CatalogueController {
                 modulesObservables.add(unModule);
             }
             ListView<Module> modulesDeLaSession = new ListView<>(modulesObservables);
-            /*modulesDeLaSession.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Module>() {
-                //Selectionne le module à planifier
-                @Override
-                public void changed(ObservableValue<? extends Module> observable, Module oldValue, Module newValue) {
-                    catalogueServices.setModuleSelectionne(newValue);
-                }
-            });*/
             modulesDeLaSession.setCellFactory(new Callback<ListView<Module>, ListCell<Module>>() {
                 @Override
                 public ListCell<Module> call(ListView<Module> param) {
                     ModuleCell cell = new ModuleCell();
-                    cell.setEvent(catalogueServices);
+                    cell.setEvent(catalogueControllerServices, laSession);
                     return cell;
                 }
             });

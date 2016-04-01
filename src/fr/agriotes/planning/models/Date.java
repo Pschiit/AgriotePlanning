@@ -54,7 +54,7 @@ public class Date extends java.sql.Date {
     }
 
     public String toString() {
-        return jour + " - " + mois + " - " + annee;
+        return (jour < 10 ? "0" + jour : jour ) + "/" + (mois < 10 ? "0" + mois : mois )+ "/" + annee;
     }
 
     @Override

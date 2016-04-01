@@ -14,9 +14,11 @@ public interface SeanceDaoServices {
 
     List<SeanceRaw> getSeancesByWeek(Date firstDay, Date LastDay) throws SQLException;
     
+    List<SeanceRaw> getSeancesByModuleSession(int idModule, int idSession) throws SQLException;
+    
     List<SeanceRaw> getSeancesByDate(Date date) throws SQLException;
 
-    SeanceRaw updateSeance(int id, Seance seance);
+    Seance updateSeance(Seance seance) throws SQLException;
 
-    SeanceRaw removeSeance(Seance seance);
+    Seance removeSeance(Seance seance) throws SQLException;
 }
