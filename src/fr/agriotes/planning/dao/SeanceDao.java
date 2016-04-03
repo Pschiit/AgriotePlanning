@@ -43,7 +43,7 @@ public class SeanceDao implements SeanceDaoServices {
 
     @Override
     public List<SeanceRaw> getSeancesByIdSession(int idSession) throws SQLException {
-        List<SeanceRaw> result = null;
+        List<SeanceRaw> result = new ArrayList<>();
         String sql = "SELECT * "
                 + "FROM seance "
                 + "WHERE id_session = ?";
@@ -52,13 +52,13 @@ public class SeanceDao implements SeanceDaoServices {
         order.setInt(1, idSession);
         ResultSet rs = order.executeQuery();
         while (rs.next()) {
-            if (result == null) {
-                result = new ArrayList<>();
-            }
             result.add(new SeanceRaw(rs.getInt("id_seance"), rs.getInt("id_session"), rs.getInt("id_module"), rs.getInt("id_formateur"), Date.FromSQLDate(rs.getDate("jour"))));
         }
         order.close();
         connection.close();
+        if (result.isEmpty()) {
+            return null;
+        }
         return result;
     }
 
@@ -69,7 +69,7 @@ public class SeanceDao implements SeanceDaoServices {
 
     @Override
     public List<SeanceRaw> getSeancesByModuleSession(int idModule, int idSession) throws SQLException {
-        List<SeanceRaw> result = null;
+        List<SeanceRaw> result = new ArrayList<>();
         String sql = "SELECT * "
                 + "FROM seance "
                 + "WHERE id_session = ? AND id_module= ?";
@@ -79,19 +79,19 @@ public class SeanceDao implements SeanceDaoServices {
         order.setInt(2, idModule);
         ResultSet rs = order.executeQuery();
         while (rs.next()) {
-            if (result == null) {
-                result = new ArrayList<>();
-            }
             result.add(new SeanceRaw(rs.getInt("id_seance"), rs.getInt("id_session"), rs.getInt("id_module"), rs.getInt("id_formateur"), Date.FromSQLDate(rs.getDate("jour"))));
         }
         order.close();
         connection.close();
+        if (result.isEmpty()) {
+            return null;
+        }
         return result;
     }
 
     @Override
     public List<SeanceRaw> getSeancesByDate(Date date) throws SQLException {
-        List<SeanceRaw> result = null;
+        List<SeanceRaw> result = new ArrayList<>();
         String sql = "SELECT * "
                 + "FROM seance "
                 + "WHERE jour = ?";
@@ -100,13 +100,13 @@ public class SeanceDao implements SeanceDaoServices {
         order.setDate(1, date.toSQLDate());
         ResultSet rs = order.executeQuery();
         while (rs.next()) {
-            if (result == null) {
-                result = new ArrayList<>();
-            }
             result.add(new SeanceRaw(rs.getInt("id_seance"), rs.getInt("id_session"), rs.getInt("id_module"), rs.getInt("id_formateur"), Date.FromSQLDate(rs.getDate("jour"))));
         }
         order.close();
         connection.close();
+        if (result.isEmpty()) {
+            return null;
+        }
         return result;
     }
 

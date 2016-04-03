@@ -60,7 +60,7 @@ public class Planning {
         return null;
     }
 
-    public List<Seance> getSeanceByModuleSession(Module module, Session session) {
+    public List<Seance> getSeancesByModuleSession(Module module, Session session) {
         List<Seance> result = new ArrayList();;
         for (Seance uneSeance : lesSeances) {
             if (uneSeance.getModule().equals(module) && uneSeance.getSession().equals(session)) {

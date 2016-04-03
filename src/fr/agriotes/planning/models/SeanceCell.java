@@ -15,7 +15,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
-import fr.agriotes.planning.services.DetailModuleControllerServices;
+import fr.agriotes.planning.services.PlanningServices;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 
@@ -64,11 +64,11 @@ public class SeanceCell extends ListCell<Seance> {
         }
     }
     
-    public void setEvent(final DetailModuleControllerServices detailModuleControllerServices){
+    public void setEvent(final PlanningServices planningServices){
         button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                detailModuleControllerServices.removeSeance(lastItem);
+                planningServices.removeSeance(lastItem);
             }
         });
         
@@ -77,7 +77,7 @@ public class SeanceCell extends ListCell<Seance> {
             public void changed(ObservableValue ov, Formateur oldValue, Formateur newValue) {   
                 if(newValue != null && newValue != lastItem.getFormateur()){
                     lastItem.setFormateur(newValue);
-                    detailModuleControllerServices.editSeance(lastItem);
+                    planningServices.editSeance(lastItem);
                 }
             }
         });

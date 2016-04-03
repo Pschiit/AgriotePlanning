@@ -15,12 +15,12 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TitledPane;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Callback;
-import fr.agriotes.planning.services.CatalogueControllerServices;
+import fr.agriotes.planning.services.CatalogueServices;
 
 public class CatalogueController {
 
     private Catalogue catalogue;
-    private CatalogueControllerServices catalogueControllerServices;
+    private CatalogueServices catalogueControllerServices;
 
     public Catalogue getCatalogue() {
         return catalogue;
@@ -28,14 +28,13 @@ public class CatalogueController {
 
     public void setCatalogue(Catalogue catalogue) {
         this.catalogue = catalogue;
-        initialize();
     }
 
-    public CatalogueControllerServices getCatalogueControllerService() {
+    public CatalogueServices getCatalogueControllerService() {
         return catalogueControllerServices;
     }
 
-    public void setCatalogueControllerService(CatalogueControllerServices catalogueControllerService) {
+    public void setCatalogueControllerService(CatalogueServices catalogueControllerService) {
         this.catalogueControllerServices = catalogueControllerService;
     }
 
@@ -43,7 +42,8 @@ public class CatalogueController {
     private Accordion accordion;
 
     @FXML
-    public void initialize() {
+    public void initialize(Catalogue catalogue) {
+        this.catalogue = catalogue;
         if (catalogueControllerServices != null) {
             paint();
         }
@@ -65,13 +65,13 @@ public class CatalogueController {
                 //Selectionne la Session à planifier
                 @Override
                 public void handle(MouseEvent event) {
-                    catalogueControllerServices.setSessionSelectionnee(laSession);
+                    catalogueControllerServices.selectSession(laSession);
                 }
             });
             //Si pas de selection selectionne le premier
             if (titlePaneSelectionnee == null) {
                 titlePaneSelectionnee = titledPane;
-                catalogueControllerServices.setSessionSelectionnee(laSession);
+                catalogueControllerServices.selectSession(laSession);
             }
 
             //creation de la ListView de moduleCell

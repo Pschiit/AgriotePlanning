@@ -1,8 +1,7 @@
 package fr.agriotes.planning.controllers;
 
-import fr.agriotes.planning.dao.CatalogueDao;
 import fr.agriotes.planning.dao.LoginDao;
-import fr.agriotes.planning.models.Formateur;
+import fr.agriotes.planning.models.FenetreErreur;
 import fr.agriotes.planning.services.LoginDaoServices;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -13,8 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.sql.SQLException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -64,11 +62,12 @@ public class LoginController {
             } else {
                 actiontarget.setText("Vous n'etez pas autorisé(e) à modifier le planning.");
             }
-        } catch(AssertionError ae){
+        } catch (AssertionError ae) {
             actiontarget.setText(ae.getMessage());
-        }
-        catch (Exception e) {
-            Logger.getLogger(PlanningController.class.getName()).log(Level.SEVERE, null, e);
+        } catch (SQLException ex) {
+            new FenetreErreur("SQL Exception", ex.getMessage());
+        } catch (IOException ex) {
+            new FenetreErreur("IO Exception", ex.getMessage());
         }
         if (saveEmail.isSelected()) {
             saveEmailInFile();

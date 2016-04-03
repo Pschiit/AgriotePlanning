@@ -3,6 +3,7 @@ package fr.agriotes.planning.controllers;
 import fr.agriotes.planning.dao.CatalogueDao;
 import fr.agriotes.planning.dao.SeanceDao;
 import fr.agriotes.planning.models.Date;
+import fr.agriotes.planning.models.FenetreErreur;
 import fr.agriotes.planning.models.Formateur;
 import fr.agriotes.planning.models.Module;
 import fr.agriotes.planning.models.Planning;
@@ -13,8 +14,6 @@ import fr.agriotes.planning.services.CatalogueDaoServices;
 import fr.agriotes.planning.services.SeanceDaoServices;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -24,19 +23,46 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import java.util.List;
-import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.stage.Modality;
-import fr.agriotes.planning.services.DetailModuleControllerServices;
-import fr.agriotes.planning.services.CatalogueControllerServices;
-import fr.agriotes.planning.services.CalendrierControllerServices;
+import fr.agriotes.planning.services.CalendrierServices;
+import fr.agriotes.planning.services.CatalogueServices;
+import fr.agriotes.planning.services.PlanningServices;
+import java.util.ArrayList;
 
-public class PlanningController implements CatalogueControllerServices, CalendrierControllerServices, DetailModuleControllerServices {
+public class PlanningController implements CatalogueServices, PlanningServices {
 
     final private Planning planning = new Planning();
+    private Session sessionSelectionnee;
+    private Module moduleSelectionne;
+    private Formateur formateurSelectionne;
     final private CatalogueDaoServices catalogueDao = new CatalogueDao();
     final private SeanceDaoServices seanceDao = new SeanceDao();
     private DetailModuleController detailModuleController;
+
+    public Session getSessionSelectionnee() {
+        return sessionSelectionnee;
+    }
+
+    public void setSessionSelectionnee(Session sessionSelectionnee) {
+        this.sessionSelectionnee = sessionSelectionnee;
+    }
+
+    public Module getModuleSelectionne() {
+        return moduleSelectionne;
+    }
+
+    public void setModuleSelectionne(Module moduleSelectionne) {
+        this.moduleSelectionne = moduleSelectionne;
+    }
+
+    public Formateur getFormateurSelectionne() {
+        return formateurSelectionne;
+    }
+
+    public void setFormateurSelectionne(Formateur formateurSelectionne) {
+        this.formateurSelectionne = formateurSelectionne;
+    }
 
     @FXML
     private Button signOutButton;
@@ -52,7 +78,7 @@ public class PlanningController implements CatalogueControllerServices, Calendri
     @FXML
     private void initialize() {
         cataloguePaneController.setCatalogueControllerService(this);
-        calendrierAnnuelPaneController.setCalendrierControllerService(this);
+        calendrierAnnuelPaneController.setPlanningServices(this);
         LoadCatalogue();
     }
 
@@ -61,7 +87,7 @@ public class PlanningController implements CatalogueControllerServices, Calendri
         try {
             goToLogin();
         } catch (IOException ex) {
-            System.err.println(ex.getMessage());
+            new FenetreErreur("IO Exception", ex.getMessage());
         }
     }
 
@@ -70,65 +96,36 @@ public class PlanningController implements CatalogueControllerServices, Calendri
         LoadCatalogue();
     }
 
-    public void LoadCatalogue() {
-        assert cataloguePaneController != null : "catalogueController null";
-        try {
-            planning.setCatalogue(catalogueDao.getCatalogue());
-            cataloguePaneController.setCatalogue(planning.getCatalogue());
-        } catch (SQLException ex) {
-            Logger.getLogger(PlanningController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    public void loadCalendrierAnnuel(Session sessionSelectionnee) {
-        assert calendrierAnnuelPaneController != null : "calendrierAnnuelPaneController null";
-        try {
-            planning.setLesSeancesFromRaw(seanceDao.getSeancesByIdSession(sessionSelectionnee.getId()));
-            calendrierAnnuelPaneController.setLesSeances(planning.getLesSeances());
-        } catch (SQLException ex) {
-            Logger.getLogger(PlanningController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        calendrierAnnuelPaneController.setSessionSelectionnee(sessionSelectionnee);
+    private void goToLogin() throws IOException {
+        Stage stage = (Stage) signOutButton.getScene().getWindow();
+        Parent root = FXMLLoader.load(getClass().getResource("/fr/agriotes/planning/views/Login.fxml"));
+        stage.setScene(new Scene(root, stage.getWidth(), stage.getHeight()));
+        stage.show();
     }
 
     @Override
-    public void setSessionSelectionnee(Session sessionSelectionnee) {
-        loadCalendrierAnnuel(sessionSelectionnee);
-    }
-
-    @Override
-    public void setModuleSelectionne(Module moduleSelectionne) {
-        calendrierAnnuelPaneController.setModuleSelectionne(moduleSelectionne);
-    }
-
-    @Override
-    public void setFormateurSelectionne(Formateur formateurSelectionne) {
-        calendrierAnnuelPaneController.setFormateurSelectionne(formateurSelectionne);
-    }
-
-    @Override
-    public Seance addSeance(Seance seance) {
+    public Seance addSeance(Date date) {
         StringBuilder log = new StringBuilder();
         Seance result = null;
         boolean error = false;
         int nbSeance = 0;
-        if (calendrierAnnuelPaneController.getSessionSelectionnee() == null) {
+        if (sessionSelectionnee == null) {
             log.append("Aucune session n'a été choisi.\n");
             error = true;
         }
-        if (calendrierAnnuelPaneController.getModuleSelectionne() == null) {
+        if (moduleSelectionne == null) {
             log.append("Aucun module n'a été choisi.\n");
             error = true;
         }
-        if (calendrierAnnuelPaneController.getFormateurSelectionne() == null) {
+        if (formateurSelectionne == null) {
             log.append("Aucun formateur n'a été choisi.\n");
             error = true;
         }
         for (Seance uneSeance : planning.getLesSeances()) {
-            if (uneSeance.getSession() == seance.getSession()
-                    && uneSeance.getModule() == seance.getModule()) {
-                nbSeance ++;
-                if(nbSeance >= seance.getModule().getNombreJoursTotal()){
+            if (uneSeance.getSession() == sessionSelectionnee
+                    && uneSeance.getModule() == moduleSelectionne) {
+                nbSeance++;
+                if (nbSeance >= moduleSelectionne.getNombreJoursTotal()) {
                     log.append("Toutes les journées ont été programmées pour ce module.\n");
                     error = true;
                     break;
@@ -137,44 +134,44 @@ public class PlanningController implements CatalogueControllerServices, Calendri
 
         }
         if (error) {
-            fenetreErreur("La seance n'a pu été créée", log.toString());
+            new FenetreErreur("La seance n'a pu été créée", log.toString());
         } else {
             try {
-                List<SeanceRaw> seancesRaw = seanceDao.getSeancesByDate(seance.getDate());
+                List<SeanceRaw> seancesRaw = seanceDao.getSeancesByDate(date);
                 if (seancesRaw != null) {
                     for (SeanceRaw seanceRaw : seancesRaw) {
-                        if (seanceRaw.getIdFormateur() == seance.getFormateur().getId() && seanceRaw.getIdModule() != seance.getModule().getId()) {
+                        if (seanceRaw.getIdFormateur() == formateurSelectionne.getId() && seanceRaw.getIdModule() != moduleSelectionne.getId()) {
                             log.append("Le formateur "
                                     + planning.getCatalogue().getFormateur(seanceRaw.getIdFormateur())
                                     + " a déja une seance planifié le "
-                                    + seance.getDate()
+                                    + date
                                     + " sur le module "
                                     + planning.getCatalogue().getModule(seanceRaw.getIdModule())
                                     + ".\n");
-                            fenetreErreur("La seance n'a pu été créée", log.toString());
+                            new FenetreErreur("La seance n'a pu été créée", log.toString());
                             error = true;
                             break;
-                        } else if (seanceRaw.getIdSession() == seance.getSession().getId() && seanceRaw.getIdModule() != seance.getModule().getId()) {
+                        } else if (seanceRaw.getIdSession() == sessionSelectionnee.getId() && seanceRaw.getIdModule() != moduleSelectionne.getId()) {
                             log.append("La session "
                                     + planning.getCatalogue().getSession(seanceRaw.getIdSession())
                                     + " a déja une seance planifié le "
-                                    + seance.getDate()
+                                    + date
                                     + " sur le module "
                                     + planning.getCatalogue().getModule(seanceRaw.getIdModule())
                                     + ".\n");
-                            fenetreErreur("La seance n'a pu été créée", log.toString());
+                            new FenetreErreur("La seance n'a pu été créée", log.toString());
                             error = true;
                             break;
                         }
                     }
                 }
                 if (!error) {
-                    result = seanceDao.addSeance(seance);
+                    result = seanceDao.addSeance(new Seance(0, sessionSelectionnee, moduleSelectionne, formateurSelectionne, date));
                     planning.addSeance(result);
                 }
             } catch (SQLException ex) {
                 log.append(ex.getMessage());
-                fenetreErreur("La seance n'a pu été créée", log.toString());
+                new FenetreErreur("La seance n'a pu été créée", log.toString());
             }
         }
         return result;
@@ -182,37 +179,76 @@ public class PlanningController implements CatalogueControllerServices, Calendri
 
     @Override
     public Seance editSeance(Seance seance) {
-        StringBuilder log = new StringBuilder();
         Seance result = null;
+        CalendrierServices calendrier = calendrierAnnuelPaneController;
         try {
             result = seanceDao.updateSeance(seance);
             planning.editSeance(seance);
-            calendrierAnnuelPaneController.editCell(seance);
+            calendrier.editCell(seance);
         } catch (SQLException ex) {
-            log.append(ex.getMessage());
-            fenetreErreur("La seance n'a pu été modifiée", log.toString());
+            new FenetreErreur("La seance n'a pu été supprimée", ex.getMessage());
         }
         return result;
     }
 
     @Override
     public Seance removeSeance(Seance seance) {
-        StringBuilder log = new StringBuilder();
         Seance result = null;
+        CalendrierServices calendrier = calendrierAnnuelPaneController;
         try {
             result = seanceDao.removeSeance(seance);
             planning.removeSeance(seance);
             detailModuleController.removeSeances(result);
-            calendrierAnnuelPaneController.removeCell(seance.getDate());
+            calendrier.removeCell(seance.getDate());
         } catch (SQLException ex) {
-            log.append(ex.getMessage());
-            fenetreErreur("La seance n'a pu été supprimée", log.toString());
+            new FenetreErreur("La seance n'a pu été supprimée", ex.getMessage());
         }
         return result;
     }
 
     @Override
-    public void fenetreModule(Module module, Session session) {
+    public void selectSession(Session sessionSelectionnee) {
+        setSessionSelectionnee(sessionSelectionnee);
+        setModuleSelectionne(null);
+        setFormateurSelectionne(null);
+        loadCalendrierAnnuel(sessionSelectionnee);
+    }
+
+    @Override
+    public void selectModule(Module moduleSelectionne) {
+        this.moduleSelectionne = moduleSelectionne;
+    }
+
+    @Override
+    public void selectFormateur(Formateur formateurSelectionne) {
+        this.formateurSelectionne = formateurSelectionne;
+    }
+
+    @Override
+    public void LoadCatalogue() {
+        assert cataloguePaneController != null : "catalogueController null";
+        try {
+            planning.setCatalogue(catalogueDao.getCatalogue());
+            cataloguePaneController.initialize(planning.getCatalogue());
+        } catch (SQLException ex) {
+            new FenetreErreur("SQL Exception", ex.getMessage());
+        }
+    }
+
+    @Override
+    public void loadCalendrierAnnuel(Session sessionSelectionnee) {
+        assert calendrierAnnuelPaneController != null : "calendrierAnnuelPaneController null";
+        try {
+            planning.setLesSeancesFromRaw(seanceDao.getSeancesByIdSession(sessionSelectionnee.getId()));
+            calendrierAnnuelPaneController.setLesSeances(planning.getLesSeances());
+            calendrierAnnuelPaneController.initialize(sessionSelectionnee);
+        } catch (SQLException ex) {
+            new FenetreErreur("SQL Exception", ex.getMessage());
+        }
+    }
+
+    @Override
+    public void loadDetailModule(Module module, Session session) {
         try {
             // Load the fxml file and create a new stage for the popup
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fr/agriotes/planning/views/DetailModule.fxml"));
@@ -228,31 +264,25 @@ public class PlanningController implements CatalogueControllerServices, Calendri
 
             // Set the controller
             detailModuleController = loader.getController();
-            detailModuleController.setModuleServices(this);
-            detailModuleController.initialize(module, session, planning.getSeanceByModuleSession(module, session));
+            detailModuleController.setPlanningServices(this);
+            List<Seance> seances = new ArrayList<>();
+            if (session.equals(sessionSelectionnee)) {
+                seances = planning.getSeancesByModuleSession(module, session);
+            } else {
+                List<SeanceRaw> seancesRaw = seanceDao.getSeancesByIdSession(session.getId());
+                for (SeanceRaw uneSeanceRaw : seancesRaw) {
+                    seances.add(planning.convertSeanceRawtoSeance(uneSeanceRaw));
+                }
+            }
+            detailModuleController.initialize(module, session, seances);
 
             // Show the dialog and wait until the user closes it
             dialogStage.showAndWait();
 
-        } catch (IOException e) {
-            System.err.println(e);
+        } catch (SQLException ex) {
+           new FenetreErreur("SQL Exception", ex.getMessage());
+        } catch (IOException ex) {
+            new FenetreErreur("IO Exception", ex.getMessage());
         }
-    }
-
-    private void goToLogin() throws IOException {
-        Stage stage = (Stage) signOutButton.getScene().getWindow();
-        Parent root = FXMLLoader.load(getClass().getResource("/fr/agriotes/planning/views/Login.fxml"));
-        stage.setScene(new Scene(root, stage.getWidth(), stage.getHeight()));
-        stage.show();
-    }
-
-    private void fenetreErreur(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-        stage.getIcons().add(new Image("/fr/agriotes/planning/content/img/Delete-s.png"));
-        alert.showAndWait();
     }
 }

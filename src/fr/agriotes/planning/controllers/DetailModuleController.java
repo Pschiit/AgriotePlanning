@@ -12,21 +12,21 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.util.Callback;
-import fr.agriotes.planning.services.DetailModuleControllerServices;
+import fr.agriotes.planning.services.PlanningServices;
 
 public class DetailModuleController {
 
-    private DetailModuleControllerServices moduleServices;
+    private PlanningServices planningServices;
     private Module module;
     private Session session;
     private List<Seance> seances;
 
-    public DetailModuleControllerServices getModuleServices() {
-        return moduleServices;
+    public PlanningServices getPlanningServices() {
+        return planningServices;
     }
 
-    public void setModuleServices(DetailModuleControllerServices moduleServices) {
-        this.moduleServices = moduleServices;
+    public void setPlanningServices(PlanningServices planningServices) {
+        this.planningServices = planningServices;
     }
 
     public Module getModule() {
@@ -90,7 +90,7 @@ public class DetailModuleController {
                 @Override
                 public ListCell<Seance> call(ListView<Seance> param) {
                     SeanceCell cell = new SeanceCell();
-                    cell.setEvent(moduleServices);
+                    cell.setEvent(planningServices);
                     return cell;
                 }
             });

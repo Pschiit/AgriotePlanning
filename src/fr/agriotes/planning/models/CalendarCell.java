@@ -1,10 +1,10 @@
 package fr.agriotes.planning.models;
 
-import fr.agriotes.planning.services.CalendrierControllerServices;
 import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import fr.agriotes.planning.services.PlanningServices;
 
 public class CalendarCell extends HBox {
 
@@ -91,13 +91,13 @@ public class CalendarCell extends HBox {
         setSeance(seance);
     }
 
-    public void setEvent(final CalendrierControllerServices calendrierControllerServices) {
+    public void setEvent(final PlanningServices calendrierControllerServices) {
         this.setOnMouseClicked(new EventHandler<MouseEvent>() {
             //Selectionne la Session à planifier
             @Override
             public void handle(MouseEvent event) {
                 if (seance != null) {
-                    calendrierControllerServices.fenetreModule(seance.getModule(), seance.getSession());
+                    calendrierControllerServices.loadDetailModule(seance.getModule(), seance.getSession());
                 }
             }
         });

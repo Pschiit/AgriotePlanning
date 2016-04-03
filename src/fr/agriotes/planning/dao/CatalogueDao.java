@@ -27,7 +27,7 @@ public class CatalogueDao implements CatalogueDaoServices {
         Catalogue result = new Catalogue();
 
         //get formateur table
-        Map<Integer, Formateur> formateurs = null;
+        Map<Integer, Formateur> formateurs = new HashMap<>();
         String sql = "SELECT id_personne, nom, prenom "
                 + "FROM personne  "
                 + "WHERE id_personne IN ( "
@@ -38,22 +38,16 @@ public class CatalogueDao implements CatalogueDaoServices {
         Statement order = connection.createStatement();
         ResultSet rs = order.executeQuery(sql);
         while (rs.next()) {
-            if (formateurs == null) {
-                formateurs = new HashMap<>();
-            }
             formateurs.put(rs.getInt("id_personne"), new Formateur(rs.getInt("id_personne"), rs.getString("nom"), rs.getString("prenom")));
         }
         order.close();
 
         //get intervenant table
-        Map<Integer, ArrayList<Formateur>> intervenants = null;
+        Map<Integer, ArrayList<Formateur>> intervenants = new HashMap<>();
         sql = "SELECT * FROM intervenant;";
         order = connection.createStatement();
         rs = order.executeQuery(sql);
         while (rs.next()) {
-            if (intervenants == null) {
-                intervenants = new HashMap<>();
-            }
             if (!intervenants.containsKey(rs.getInt("id_module"))) {
                 intervenants.put(rs.getInt("id_module"), new ArrayList<Formateur>());
             }
@@ -63,7 +57,7 @@ public class CatalogueDao implements CatalogueDaoServices {
         order.close();
 
         //get module table
-        Map<Integer, Module> modules = null;
+        Map<Integer, Module> modules = new HashMap<>();
         sql = "SELECT id_module, intitule, nb_jours "
                 + "FROM module m "
                 + "WHERE id_module IN ( "
@@ -73,22 +67,16 @@ public class CatalogueDao implements CatalogueDaoServices {
         order = connection.createStatement();
         rs = order.executeQuery(sql);
         while (rs.next()) {
-            if (modules == null) {
-                modules = new HashMap<>();
-            }
             modules.put(rs.getInt("id_module"), new Module(rs.getInt("id_module"), rs.getString("intitule"), rs.getInt("nb_jours"), intervenants.get(rs.getInt("id_module"))));
         }
         order.close();
 
         //get module_formation table
-        Map<Integer, ArrayList<Module>> moduleFormation = null;
+        Map<Integer, ArrayList<Module>> moduleFormation = new HashMap<>();
         sql = "SELECT * FROM module_formation;";
         order = connection.createStatement();
         rs = order.executeQuery(sql);
         while (rs.next()) {
-            if (moduleFormation == null) {
-                moduleFormation = new HashMap<>();
-            }
             if (!moduleFormation.containsKey(rs.getInt("id_formation"))) {
                 moduleFormation.put(rs.getInt("id_formation"), new ArrayList<Module>());
             }
@@ -98,7 +86,7 @@ public class CatalogueDao implements CatalogueDaoServices {
         order.close();
 
         //get session table
-        Map<Integer, Session> sessions = null;
+        Map<Integer, Session> sessions = new HashMap<>();
         sql = "SELECT s.id_session, s.id_formation, s.date_debut,s.date_fin, f.intitule "
                 + "FROM session s "
                 + "INNER JOIN formation f "
@@ -107,14 +95,14 @@ public class CatalogueDao implements CatalogueDaoServices {
         order = connection.createStatement();
         rs = order.executeQuery(sql);
         while (rs.next()) {
-            if (sessions == null) {
-                sessions = new HashMap<>();
-            }
             sessions.put(rs.getInt("id_session"), new Session(rs.getInt("id_session"), rs.getString("intitule"), Date.FromSQLDate(rs.getDate("date_debut")), Date.FromSQLDate(rs.getDate("date_fin")), moduleFormation.get(rs.getInt("id_formation"))));
         }
         order.close();
         connection.close();
 
+        if (sessions.isEmpty() || modules.isEmpty() || formateurs.isEmpty()) {
+            return null;
+        }
         result.setLesFormateurs(formateurs);
         result.setLesModules(modules);
         result.setLesSessions(sessions);

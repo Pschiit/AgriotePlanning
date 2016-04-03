@@ -16,8 +16,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
-import fr.agriotes.planning.services.DetailModuleControllerServices;
-import fr.agriotes.planning.services.CatalogueControllerServices;
+import fr.agriotes.planning.services.CatalogueServices;
 
 public class ModuleCell extends ListCell<Module> {
 
@@ -67,23 +66,21 @@ public class ModuleCell extends ListCell<Module> {
         }
     }
 
-    public void setEvent(final CatalogueControllerServices catalogueServices,final Session session) {
+    public void setEvent(final CatalogueServices catalogueServices,final Session session) {
         //selection du module et du formateur choisi
-        EventHandler<MouseEvent> selectionEvent = new EventHandler<MouseEvent>() {
+        this.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                catalogueServices.setModuleSelectionne(lastItem);
-                catalogueServices.setFormateurSelectionne(formateurs.getValue());
+                catalogueServices.selectModule(lastItem);
+                catalogueServices.selectFormateur(formateurs.getValue());
             }
-        };
-        labelModule.setOnMousePressed(selectionEvent);
-        pane[0].setOnMousePressed(selectionEvent);
+        });
         
         //affichage detaille du module
         button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                catalogueServices.fenetreModule(lastItem, session);
+                catalogueServices.loadDetailModule(lastItem, session);
             }
         });
     }
